@@ -18,10 +18,10 @@ import java.util.Scanner;
 public class Urab
 {
     String HELP = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.
-<expression>: Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'."
+<expression>: Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.";
     public static void main(String[] args)
     {   
-        boolean verbose = false
+        boolean verbose = false;
         Scanner in = new Scanner(System.in);
         String input = "";
         while(!input.equals("q"))
