@@ -19,18 +19,18 @@ public class Urab
 {
 	public static void main(String[] args)
 	{   
-        	boolean verbose = false;
+        boolean verbose = false;
 		Scanner in = new Scanner(System.in);
 		String input = "";
 		//printHelp();
-		if (args.size() > 2)
+		if (args.length > 2)
 		{
 			//immediately throw an error and quit
 		}
 		if (args[0].equals("-v") || args[0].equals("--verbose"))
 		{
 			verbose = true;
-			if (args.size() == 2)
+			if (args.length == 2)
 			{
 				if (args[1].equals("-h") || args[1].equals("-?") || args[1].equals("--help"))
 				{
@@ -43,7 +43,7 @@ public class Urab
 			printHelp();
 		}
 		else
-			printSynopsis;
+			printSynopsis();
 		printStartup();
 		while(!input.equals("q"))
 		{
@@ -68,11 +68,11 @@ public class Urab
 			}
 			else if (input.equals("q"))
 			{
-				System.out.print("bye.");
+				System.out.print("bye.\n");
 				System.exit(0);
 			}
 			else
-				parse(verbose, input);			//still need to write the actual parsing function
+				parse(verbose, input);
         	}
     	}
     	public static void printStartup()
@@ -82,17 +82,24 @@ public class Urab
     	}
 	public static void printHelp()
 	{
-		string help = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n\nThis program interprets commands of the format \'(<method> {arg}*)\' on the command line, finds corresponding methods in <class-name>, and executes them, printing the result to sysout.\n";
+		String help = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n\nThis program interprets commands of the format \'(<method> {arg}*)\' on the command line, finds corresponding methods in <class-name>, and executes them, printing the result to sysout.\n";
 		System.out.print(help);
 	}
 	public static void printSynopsis()
 	{
-		string synopsis = string help = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n";
+		String synopsis = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n";
 		System.out.print(synopsis);
 	}
 	public static void printFunctions()
 	{
-		string functions = "(add string string) : string\n(add float float) : float\n(add int int) : int\n(sub float float) : float\n(sub int int) : int\n(div int int) : int\n(div float float) : float\n(mul float float) : float\n(mul int int) : int\n(inc float) : float\n(inc int) : int\n(dec int) : int\n(dec float) : float\n(len string) : int\n";
+		String functions = "(add string string) : string\n(add float float) : float\n(add int int) : int\n(sub float float) : float\n(sub int int) : int\n(div int int) : int\n(div float float) : float\n(mul float float) : float\n(mul int int) : int\n(inc float) : float\n(inc int) : int\n(dec int) : int\n(dec float) : float\n(len string) : int\n";
 		System.out.print(functions);
 	}
+
+    public static boolean parse(boolean verbose, String input)
+    {
+        //in future, will return a tree
+        System.out.println("Parsed!\n");
+        return true;
+    }
 }
