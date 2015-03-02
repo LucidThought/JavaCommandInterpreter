@@ -17,13 +17,12 @@ import java.util.Scanner;
 
 public class Urab
 {
-    String HELP = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.
-<expression>: Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.";
     public static void main(String[] args)
     {   
         boolean verbose = false;
         Scanner in = new Scanner(System.in);
         String input = "";
+        printHelp();
         while(!input.equals("q"))
         {
             System.out.print("> ");
@@ -31,5 +30,10 @@ public class Urab
             //System.out.print(input + "\n");
             
         }
+    }
+    public static void printHelp()
+    {
+        String HELP = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text. <expression>: Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
+        System.out.print(HELP);
     }
 }
