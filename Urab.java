@@ -6,7 +6,7 @@ Riley Lahd
 Andrew Lata
 Kendra Wannamaker
 
-Version 1.0.0 - 02/03/2015
+Version 1.0.1 - 04/03/2015
 
 Our language is named Urab. This file will import a command set and
 take command line input according to that command set.
@@ -20,41 +20,71 @@ public class Urab
 	public static void main(String[] args)
 	{   
         boolean verbose = false;
+        boolean helpMode = false;
 		Scanner in = new Scanner(System.in);
 		String input = "";
+        String jarName = "commands.jar";
+        String className = "commands";
 		//printHelp();
-<<<<<<< HEAD
-		if (args.length > 2)
+		if (args.length == 0)
 		{
-			//immediately throw an error and quit
+			//immediately print synopsis
+            printSynopsis();
 		}
-		else if (args[0].equals("-v") || args[0].equals("--verbose"))
-		{
-			verbose = true;
-			if (args.length == 2)
-=======
-		if (args.length > 1)
-		{
-			if (args[0].equals("-v") || args[0].equals("--verbose"))
->>>>>>> c315bba80632c506f2e16b68ce6225b0d083d181
-			{
-				verbose = true;
-				if (args.length == 2)
-				{
-					if (args[1].equals("-h") || args[1].equals("-?") || args[1].equals("--help"))
-					{
-						printHelp();
-					}
-				}
-			}
-			else if (args[0].equals("-h") || args[0].equals("-?") || args[0].equals("--help"))
-			{
-				printHelp();
-			}
-		}
-		else
-			printSynopsis();
+        for(int i = 0; i<args.length;i++)
+        {
+            if((args[i].toLowerCase()).equals("--help") || (args[i].toLowerCase()).equals("--h") || args[i].equals("-h") || args[i].equals("-hv") || args[i].equals("-vh") || args[i].equals("-?"))
+            {
+                if(args.length>1)
+                {
+                    //if -h -v is allowed, this is wrong
+                    //if -h doesnt exit program, this is stupid
+                    System.out.println("Qualifier --help (-h, -?) should not appear with any command-line arguments.");
+                    printSynopsis();
+                    System.exit(-4);
+                }
+                helpMode = true;
+                //System.out.print("h\n");
+            }
+            if( ((args[i].toLowerCase())).equals("--verbose") || (args[i].toLowerCase()).equals("--v") || args[i].equals("-v") || args[i].equals("-hv") || args[i].equals("-vh"))
+            {
+                verbose = true;
+                //System.out.print("v\n");
+            }
+            if((args[i].indexOf('.') >= 0) && (args[i].substring(args[i].lastIndexOf('.'))).equals(".jar"))
+            {
+                if(jarName.equals("commands.jar"))
+                {
+                    jarName = args[i];
+                }   
+                else
+                {
+                    System.out.println("Could not load jar file: " + args[i]);
+                    System.exit(-5);
+                }
+            }
+            else if(!(args[i].startsWith("-")))
+            {
+                if(className.equals("commands") && !jarName.equals("commands.jar"))
+                {
+                    className = args[i];
+                }
+                else
+                {
+                    System.out.println("Could not find class: " + args[i]);
+                    System.exit(-6);
+                }
+            }
+
+        }
+        if(helpMode == true)
+        {
+            printHelp();
+            //System.quit(0)
+            //Not sure if help mode is supposed to lead to normal operation
+        }
 		printStartup();
+        System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
 		while(!input.equals("q"))
 		{
             		System.out.print("> ");
@@ -87,7 +117,7 @@ public class Urab
     	}
     	public static void printStartup()
     	{
-        	String startup = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text. <expression>:           Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
+        	String startup = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.\n<expression>:           Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
         	System.out.print(startup);
     	}
 	public static void printHelp()
