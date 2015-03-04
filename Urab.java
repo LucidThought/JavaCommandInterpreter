@@ -23,11 +23,11 @@ public class Urab
 		Scanner in = new Scanner(System.in);
 		String input = "";
 		//printHelp();
-		if (args.length > 2)
+		if (args.length == 0)
 		{
 			//immediately throw an error and quit
 		}
-		if (args[0].equals("-v") || args[0].equals("--verbose"))
+		else if (args[0].equals("-v") || args[0].equals("--verbose"))
 		{
 			verbose = true;
 			if (args.length == 2)
