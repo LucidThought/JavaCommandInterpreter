@@ -23,7 +23,8 @@ public class Urab
 		Scanner in = new Scanner(System.in);
 		String input = "";
 		//printHelp();
-		if (args.length == 0)
+<<<<<<< HEAD
+		if (args.length > 2)
 		{
 			//immediately throw an error and quit
 		}
@@ -31,16 +32,25 @@ public class Urab
 		{
 			verbose = true;
 			if (args.length == 2)
+=======
+		if (args.length > 1)
+		{
+			if (args[0].equals("-v") || args[0].equals("--verbose"))
+>>>>>>> c315bba80632c506f2e16b68ce6225b0d083d181
 			{
-				if (args[1].equals("-h") || args[1].equals("-?") || args[1].equals("--help"))
+				verbose = true;
+				if (args.length == 2)
 				{
-					printHelp();
+					if (args[1].equals("-h") || args[1].equals("-?") || args[1].equals("--help"))
+					{
+						printHelp();
+					}
 				}
 			}
-		}
-		else if (args[0].equals("-h") || args[0].equals("-?") || args[0].equals("--help"))
-		{
-			printHelp();
+			else if (args[0].equals("-h") || args[0].equals("-?") || args[0].equals("--help"))
+			{
+				printHelp();
+			}
 		}
 		else
 			printSynopsis();
@@ -99,7 +109,7 @@ public class Urab
     public static boolean parse(boolean verbose, String input)
     {
         //in future, will return a tree
-        System.out.println("Parsed!\n");
+        System.out.print(input + "\nParsed!\n");
         return true;
     }
 }
