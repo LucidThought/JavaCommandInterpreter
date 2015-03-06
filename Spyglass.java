@@ -13,8 +13,6 @@ public class Spyglass
 
 	public Spyglass(String jarFile, String classFile) throws FileNotFoundException
 	{
-		//URL comJar = new URL("jar", "", jarfile);
-		//jarConnection = (JarURLConnection)comJar.openConnection();
 		if (verifyClass(jarFile, classFile) == true)
 		{
 			JarFile jar = new JarFile(jarFile);
