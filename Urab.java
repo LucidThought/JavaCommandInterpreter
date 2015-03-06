@@ -80,11 +80,11 @@ public class Urab
         if(helpMode == true)
         {
             printHelp();
-            //System.quit(0)
-            //Not sure if help mode is supposed to lead to normal operation
+            System.exit(0);            
         }
 		printStartup();
-        System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
+        //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
+
 		while(!input.equals("q"))
 		{
             		System.out.print("> ");
@@ -139,7 +139,65 @@ public class Urab
     public static boolean parse(boolean verbose, String input)
     {
         //in future, will return a tree
-        System.out.print(input + "\nParsed!\n");
+        //final int MAX_ARGS = 5;
+        input = input.trim();
+        if(input.startsWith("(")) //then must be a funcall
+        {
+            String funName = "";
+            if(input.lastIndexOf(')') > 0)
+            {
+                input = input.substring(1, input.lastIndexOf(')'));
+                String[] args = [0]
+                for(int i = 0; i<input.length; i++)
+                {
+                    //if a space is found outside of brackets, add substring to array
+                }
+
+                /*
+                String[] args = input.split("(\\s+)");
+                boolean changed = false;
+                for(int i = 0; i< args.length; i++)
+                {
+                    if args[i].startsWith("(")
+                    {
+                        changed = true;
+                        int startMerge = i;
+                    }
+                    else if args[i].endsWith(")")
+                    {
+                        int endMerge = i;
+                        String[] temp = String[endMerge-startMerge]
+                        for(int j = 0; j<=temp.length; j++)
+                        {
+                            if (j > startMerge && j <= endMerge)
+                            {
+                                temp[startMerge] = temp[startMerge] + " " + args[j];
+                            }
+                            else if j <= (startMerge)
+                            {
+                                temp[j] = args[j];
+                            }
+                            else if (j > endMerge)
+                            {
+                                temp[j] = args[j+(endMerge-startMerge)];
+                            }
+                        }
+                    }
+                }
+                */
+                for(int i = 0; i< args.length; i++)
+                {
+                    System.out.print(args[i] + " ");
+                }
+                System.out.print("\n");
+            }
+        }
         return true;
+    }
+    String[] addElement(String[] args, String newArg)
+    {
+        String[] newArray = Arrays.Copyof(args, args.length+1)
+        newArray[args.length] = newArg;
+        return newArray;
     }
 }
