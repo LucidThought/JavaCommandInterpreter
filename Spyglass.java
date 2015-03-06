@@ -6,18 +6,18 @@ public class Spyglass
 {
 	private JarURLConnection jarConnection;
 
-	public Spyglass(String jarfile, String classfile) throws FileNotFoundException
+	public Spyglass(String jarFile, String classFile) throws FileNotFoundException
 	{
 		//URL comJar = new URL("jar", "", jarfile);
 		//jarConnection = (JarURLConnection)comJar.openConnection();
-		if (verifyClass(jarfile, classfile) == true)
+		if (verifyClass(jarFile, classFile) == true)
 		{
 			URL comJar = new URL("jar", "", jarfile);
 			jarConnection = (JarURLConnection)comJar.openConnection();
 		}
 		else
 		{
-			throw new FileNotFoundException("Class name given is invalid.");
+			throw new FileNotFoundException("Could not load class: " + classFile);
 		}
 	}
 	
