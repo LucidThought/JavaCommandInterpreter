@@ -26,25 +26,30 @@ public class Spyglass
 			Enumeration e = jar.entries();
 
 			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
-			URLClassLoader cl = URLClassLoader.newInstance(urls);
+			URLClassLoader cl = new URLClassLoader(urls);
 
+			lookAtThis = cl.loadClass(classFile);
+/*
 			while (e.hasMoreElements()) 
 			{
 				JarEntry je = (JarEntry) e.nextElement();
 				if(je.isDirectory() || !je.getName().endsWith(".class"))
 				{
-				continue;
+					continue;
 				}
-			// -6 because of .class
-			String className = je.getName().substring(0,je.getName().length()-6);
-			className = className.replace('/', '.');
-			if (className.contains(classFile))
-			{
-				lookAtThis = cl.loadClass(className);  //This line is not working...
-				break;
+				// -6 because of .class
+				String className = je.getName().substring(0,je.getName().length()-6);
+				className = className.replace('/', '.');
+				if (className.contains(classFile))
+				{
+//					System.out.println(className);
+					lookAtThis = cl.loadClass(className+".class");  //This line is not working...
+					break;
+				}
 			}
-			}
+*/
 		}
+
 		else
 		{
 			throw new FileNotFoundException("Cannot find the indended class \"" + classFile + "\" in the specified jar");
@@ -57,7 +62,7 @@ public class Spyglass
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(jar));
 		for(ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
 		{
-			System.out.println(entry.getName());
+//			System.out.println(entry.getName());
 			if(entry.getName().endsWith(".class") && !entry.isDirectory() && (entry.getName().contains(commandObject+".class"))) 
 			{
 				return true;
