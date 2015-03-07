@@ -38,14 +38,16 @@ public class Spyglass
 			// -6 because of .class
 			String className = je.getName().substring(0,je.getName().length()-6);
 			className = className.replace('/', '.');
-			if (className.substring(className.lastIndexOf(".")).equalsIgnoreCase(classFile))
-			lookAtThis = cl.loadClass(className);
-			break;
+			if (className.contains(classFile))
+			{
+				lookAtThis = cl.loadClass(className);  //This line is not working...
+				break;
+			}
 			}
 		}
 		else
 		{
-			throw new FileNotFoundException("The indended class \"" + classFile + "\" does not exist");
+			throw new FileNotFoundException("Cannot find the indended class \"" + classFile + "\" in the specified jar");
 		}
 
 	}
@@ -55,7 +57,8 @@ public class Spyglass
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(jar));
 		for(ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
 		{
-			if(entry.getName().endsWith(".class") && !entry.isDirectory() && (entry.getName().substring(entry.getName().lastIndexOf("/") ,entry.getName().indexOf(".class"))==commandObject)) 
+			System.out.println(entry.getName());
+			if(entry.getName().endsWith(".class") && !entry.isDirectory() && (entry.getName().contains(commandObject+".class"))) 
 			{
 				return true;
 			}
