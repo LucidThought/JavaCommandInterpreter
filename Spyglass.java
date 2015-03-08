@@ -20,8 +20,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.lang.SecurityException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Spyglass
 {
@@ -166,5 +168,31 @@ public class Spyglass
 			} else
 				System.out.print(" " + type.getName());
 		}
+	}
+
+
+
+
+
+
+	public Object invokeMethod (String methodName, Class[] paramTypes, Object[] params) {
+// throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
+
+/*
+* See http://www.oracle.com/technetwork/articles/java/javareflection-1536171.html
+*/
+		Object returnObj = new Object();
+
+		System.out.println(methodName);
+
+		try {
+			Method method = lookAtThis.getMethod(methodName, paramTypes);
+			returnObj = method.invoke(lookAtThis, params);
+		}
+			catch (Throwable e) {
+			System.err.println(e);
+		}
+
+		return returnObj;
 	}
 }
