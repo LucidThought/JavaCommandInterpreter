@@ -12,10 +12,10 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.lang.Object;
 import java.net.URL;
-import java.lang.reflection.Constructor;
-import java.lang.reflection.Field;
-import java.lang.reflection.Method;
-import java.lang.reflection.Modifier;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class Spyglass
 {
@@ -31,8 +31,9 @@ public class Spyglass
 
 			URL[] urls = { new URL("jar:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
+			URLClassLoader child = new URLClassLoader (new URL[] {new URL("file://./"+jarFile)}, this.getClass().getClassLoader());
 
-			lookAtThis = cl.loadClass(classFile);
+			lookAtThis = Class.forName("com."+classFile,true,child);
 /*
 			while (e.hasMoreElements()) 
 			{
