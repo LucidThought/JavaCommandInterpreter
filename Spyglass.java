@@ -12,6 +12,10 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.lang.Object;
 import java.net.URL;
+import java.lang.reflection.Constructor;
+import java.lang.reflection.Field;
+import java.lang.reflection.Method;
+import java.lang.reflection.Modifier;
 
 public class Spyglass
 {
@@ -71,4 +75,44 @@ public class Spyglass
 		return false;
 	}
 
+//? not sure where this goes
+	Class reflectClass = classFile.class;
+
+	public boolean verifyFunction( String func, String arguments)
+	{
+		Method[] classMethods = reflectClass.getMethods();
+		for(Method method : classMethod)
+		{
+			if (method.getName().equals( func ))
+			{
+				if (verifyParameters( func, arguments))
+				{
+					return true;
+				}
+				
+			}
+			index++;
+		}
+		return false;
+	}
+				
+	public boolen verifyParameters(String func, String arguments)
+	{
+		Class[] parameterType = method.getParameterTypes();
+		String[] argArray = arguments.split(" ");
+		int index = 0;
+		boolean isLegit = false;
+		for( Class parameter : parameterType)
+		{
+			if (parameter.getName().equals( argArray[index]) == false)
+			{
+				return false;
+			}
+			else
+			{
+			isLegit = true;
+			}
+		}
+		return isLegit;
+	}
 }
