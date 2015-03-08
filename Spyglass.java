@@ -1,10 +1,12 @@
 import java.lang.Exception;
+import java.lang.ClassLoader;
 import java.net.URLClassLoader;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.File;
 import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
 import java.util.Enumeration;
@@ -26,13 +28,14 @@ public class Spyglass
 	{
 		if (verifyClass(jarFile, classFile) == true)
 		{
-			JarFile jar = new JarFile(jarFile);
+			JarFile jar = new JarFile(new File(jarFile));
 			Enumeration e = jar.entries();
 
 			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
 
-//			lookAtThis = Class.forName(classFile,true,cl);
+//			lookAtThis = Class.forName(classFile, true, cl);
+			
 
 			while (e.hasMoreElements()) 
 			{
@@ -46,7 +49,7 @@ public class Spyglass
 				className = className.replace('/', '.');
 				if (className.contains(classFile))
 				{
-//					System.out.println(className);
+					System.out.println(className);
 					lookAtThis = cl.loadClass(className);  //This line is not working...
 					break;
 				}
