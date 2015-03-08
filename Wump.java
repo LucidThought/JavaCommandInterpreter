@@ -49,11 +49,4 @@ public class Wump {
 		}
 	}
 
-
-	public static void main(String args[]) {
-		Class reflectClass = TestWump.class;
-
-		printMethods(getAccessibleMethods(reflectClass));
-	}
-
 }
