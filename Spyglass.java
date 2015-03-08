@@ -25,7 +25,7 @@ public class Spyglass
 			JarFile jar = new JarFile(jarFile);
 			Enumeration e = jar.entries();
 
-			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
+			URL[] urls = { new URL("jar:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
 
 			lookAtThis = cl.loadClass(classFile);
@@ -43,7 +43,7 @@ public class Spyglass
 				if (className.contains(classFile))
 				{
 //					System.out.println(className);
-					lookAtThis = cl.loadClass(className+".class");  //This line is not working...
+					lookAtThis = cl.loadClass(className);  //This line is not working...
 					break;
 				}
 			}
