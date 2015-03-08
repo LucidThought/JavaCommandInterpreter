@@ -29,11 +29,11 @@ public class Spyglass
 			JarFile jar = new JarFile(jarFile);
 			Enumeration e = jar.entries();
 
-			URL[] urls = { new URL("jar:" + jarFile+"!/") };
+			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
 			URLClassLoader child = new URLClassLoader (new URL[] {new URL("file://./"+jarFile)}, this.getClass().getClassLoader());
 
-			lookAtThis = Class.forName("com."+classFile,true,child);
+			lookAtThis = Class.forName(classFile,true,cl);
 /*
 			while (e.hasMoreElements()) 
 			{
