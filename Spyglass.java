@@ -31,10 +31,9 @@ public class Spyglass
 
 			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
-			URLClassLoader child = new URLClassLoader (new URL[] {new URL("file://./"+jarFile)}, this.getClass().getClassLoader());
 
-			lookAtThis = Class.forName(classFile,true,cl);
-/*
+//			lookAtThis = Class.forName(classFile,true,cl);
+
 			while (e.hasMoreElements()) 
 			{
 				JarEntry je = (JarEntry) e.nextElement();
@@ -52,7 +51,7 @@ public class Spyglass
 					break;
 				}
 			}
-*/
+
 		}
 
 		else
