@@ -96,7 +96,7 @@ public class Spyglass
 		return false;
 	}
 				
-	public boolen verifyParameters(String func, String arguments)
+	public boolean verifyParameters(String func, String arguments)
 	{
 		Class[] parameterType = method.getParameterTypes();
 		String[] argArray = arguments.split(" ");
