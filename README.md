@@ -5,7 +5,7 @@ This is an assignment in Haskell for a Programming Paradigms class at the Univer
 
 The collaborators are:
 Anthony Coulthard (AnthonyCoulthard); 
-Riley Lahd, Esquire (rileylahd); 
+Riley Lahd (rileylahd); 
 Andrew Lata (LucidThought); 
 Kendra Wannamaker (kawannam); 
 Andrew Howell (a3howell); 
