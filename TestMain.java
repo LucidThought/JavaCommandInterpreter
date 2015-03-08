@@ -13,6 +13,7 @@ public class TestMain
 			Spyglass test = new Spyglass("commands.jar", "Commands");
 			String inputs = "int int";
 			test.verifyFunction( "div", inputs);
+			test.printMethods (test.getAccessibleMethods());
 		}
 		catch (FileNotFoundException ef)
 		{
