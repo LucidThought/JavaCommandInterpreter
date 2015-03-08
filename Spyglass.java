@@ -82,6 +82,7 @@ public class Spyglass
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
+			System.out.println(method.getName());
 			if (method.getName().equals( func ))
 			{
 				if (verifyParameters( method, func, arguments))
