@@ -76,9 +76,6 @@ public class Spyglass
 		return false;
 	}
 
-//? not sure where this goes
-	Class reflectClass = classFile.class;
-
 	public boolean verifyFunction( String func, String arguments)
 	{
 		Method[] classMethods = reflectClass.getMethods();
