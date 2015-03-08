@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.SecurityException;
 
 public class Spyglass
 {
@@ -82,7 +83,7 @@ public class Spyglass
 	}
 
 
-	public boolean verifyFunction( String func, String arguments)
+	public boolean verifyFunction( String func, String arguments) throws SecurityException
 	{
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
