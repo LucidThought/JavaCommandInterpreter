@@ -76,25 +76,25 @@ public class Spyglass
 		return false;
 	}
 
+
 	public boolean verifyFunction( String func, String arguments)
 	{
-		Method[] classMethods = reflectClass.getMethods();
-		for(Method method : classMethod)
+		Method[] classMethods = lookAtThis.getMethods();
+		for(Method method : classMethods)
 		{
 			if (method.getName().equals( func ))
 			{
-				if (verifyParameters( func, arguments))
+				if (verifyParameters( method, func, arguments))
 				{
 					return true;
 				}
 				
 			}
-			index++;
 		}
 		return false;
 	}
 				
-	public boolean verifyParameters(String func, String arguments)
+	public boolean verifyParameters(Method method, String func, String arguments)
 	{
 		Class[] parameterType = method.getParameterTypes();
 		String[] argArray = arguments.split(" ");
@@ -110,6 +110,7 @@ public class Spyglass
 			{
 			isLegit = true;
 			}
+			index++;
 		}
 		return isLegit;
 	}
