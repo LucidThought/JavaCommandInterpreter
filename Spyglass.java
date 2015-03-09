@@ -56,7 +56,7 @@ public class Spyglass
 				if (className.contains(classFile))
 				{
 					System.out.println(je.getName());
-					lookAtThis = cl.loadClass(className);  //This line is not working...
+					lookAtThis = cl.loadClass(className);  
 					break;
 				}
 			}
