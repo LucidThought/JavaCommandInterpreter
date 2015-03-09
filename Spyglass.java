@@ -30,6 +30,8 @@ public class Spyglass
 	private JarURLConnection jarConnection;
 	private Class lookAtThis;
 
+//	The constructor here verifies and loads the class file from the given jar,
+//	then assigns the class to operate reflection on in the varible 'lookAtThis'
 	public Spyglass(String jarFile, String classFile) throws FileNotFoundException, IOException, MalformedURLException, ClassNotFoundException
 	{
 		if (verifyClass(jarFile, classFile) == true)
@@ -40,9 +42,6 @@ public class Spyglass
 			URL[] urls = { new URL("jar:file:" + jarFile+"!/") };
 			URLClassLoader cl = new URLClassLoader(urls);
 
-//			lookAtThis = Class.forName(classFile, true, cl);
-			
-
 			while (e.hasMoreElements()) 
 			{
 				JarEntry je = (JarEntry) e.nextElement();
@@ -50,7 +49,7 @@ public class Spyglass
 				{
 					continue;
 				}
-				// -6 because of .class
+				// -6 because of '.class'
 				String className = je.getName().substring(0,je.getName().length()-6);
 				className = className.replace('/', '.');
 				if (className.contains(classFile))
