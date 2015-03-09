@@ -49,7 +49,7 @@ public class Spyglass
 				className = className.replace('/', '.');
 				if (className.contains(classFile))
 				{
-					System.out.println(className);
+					System.out.println(je.getName());
 					lookAtThis = cl.loadClass(className);  //This line is not working...
 					break;
 				}
