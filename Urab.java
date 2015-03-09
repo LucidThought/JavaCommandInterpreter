@@ -13,6 +13,7 @@ take command line input according to that command set.
 */
 import java.io.*;
 import java.util.Scanner;
+import java.util.Arrays;
 
 
 public class Urab
@@ -147,11 +148,38 @@ public class Urab
             if(input.lastIndexOf(')') > 0)
             {
                 input = input.substring(1, input.lastIndexOf(')'));
-                String[] args = [0]
-                for(int i = 0; i<input.length; i++)
+                String[] args = {};
+                int brackets = 0;
+                String substring = "";
+                for(int i = 0; i<input.length(); i++)
                 {
                     //if a space is found outside of brackets, add substring to array
+                    substring = substring + input.charAt(i);
+                    if(input.charAt(i) == '(')
+                    {
+                        brackets++;
+                    }
+                    else if(input.charAt(i) == ')')
+                    {
+                        brackets--;
+                    }
+                    else if((input.charAt(i) == ' ' && brackets == 0) || (i == input.length()-1))
+                    {
+                        args = addElement(args, substring.trim());
+                        //System.out.print(substring + " ");
+                        substring = "";
+                    }
+
+                    if(brackets < 0)
+                    {
+                        //error out, mismatched bracket
+                    }
+                    if((i == input.length()-1) && (brackets != 0))
+                    {
+                        //error out, mismatched bracket
+                    }
                 }
+
 
                 /*
                 String[] args = input.split("(\\s+)");
@@ -194,9 +222,9 @@ public class Urab
         }
         return true;
     }
-    String[] addElement(String[] args, String newArg)
+    public static String[] addElement(String[] args, String newArg)
     {
-        String[] newArray = Arrays.Copyof(args, args.length+1)
+        String[] newArray = Arrays.copyOf(args, args.length+1);
         newArray[args.length] = newArg;
         return newArray;
     }
