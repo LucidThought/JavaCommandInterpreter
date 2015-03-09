@@ -1,5 +1,6 @@
 import java.lang.Exception;
 import java.lang.ClassLoader;
+import java.lang.NullPointerException;
 import java.net.URLClassLoader;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
@@ -84,15 +85,15 @@ public class Spyglass
 	}
 
 
-	public boolean verifyFunction( String func, String arguments) throws SecurityException
+	public boolean verifyFunction(String func, String arguments) throws SecurityException
 	{
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
 			System.out.println(method.getName());
-			if (method.getName().equals( func ))
+			if (method.getName().equals(func))
 			{
-				if (verifyParameters( method, func, arguments))
+				if (verifyParameters(method, func, arguments))
 				{
 					return true;
 				}
@@ -110,7 +111,7 @@ public class Spyglass
 		boolean isLegit = false;
 		for( Class parameter : parameterType)
 		{
-			if (parameter.getName().equals( argArray[index]) == false)
+			if (parameter.getName().equals(argArray[index]) == false)
 			{
 				return false;
 			}
@@ -122,7 +123,37 @@ public class Spyglass
 		}
 		return isLegit;
 	}
-	
+
+	public String verifyReturns(String function, String arguments)
+	{
+		Method theMethod = summonMethod(function, arguments);
+		if (theMethod == null)
+		{
+			throw new NullPointerException();
+		}
+		else
+		{
+			return theMethod.getReturnType().getName();
+		}
+	}
+
+	public Method summonMethod(String function, String arguments) throws SecurityException
+	{
+		Method[] classMethods = lookAtThis.getMethods();
+		for(Method method : classMethods)
+		{
+			System.out.println(method.getName());
+			if (method.getName().equals(function))
+			{
+				if (verifyParameters(method, function, arguments))
+				{
+					return method;
+				}
+				
+			}
+		}
+		return null;
+	}
 
 	/*
 	* See http://stackoverflow.com/questions/1857775/getting-a-list-of-accessible-methods-for-a-given-class-via-reflection
