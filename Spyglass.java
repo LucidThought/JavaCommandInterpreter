@@ -18,6 +18,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.lang.SecurityException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Spyglass
 {
@@ -79,7 +85,7 @@ public class Spyglass
 	}
 
 
-	public boolean verifyFunction( String func, String arguments)
+	public boolean verifyFunction( String func, String arguments) throws SecurityException
 	{
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
@@ -116,5 +122,77 @@ public class Spyglass
 			index++;
 		}
 		return isLegit;
+	}
+	
+
+	/*
+	* See http://stackoverflow.com/questions/1857775/getting-a-list-of-accessible-methods-for-a-given-class-via-reflection
+	*/
+
+	public Method[] getAccessibleMethods()
+	{
+		List<Method> result = new ArrayList<Method>();
+		
+			for (Method method : lookAtThis.getDeclaredMethods()) {
+			    int modifiers = method.getModifiers();
+			    if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
+				result.add(method);
+			    }
+			}
+
+			
+		
+
+		return result.toArray(new Method[result.size()]);
+	}
+
+
+
+
+	public static void printMethods(Method[] methods) {
+		for (Method method : methods) {
+			System.out.print("(" + method.getName());
+			returnParams(method);
+			System.out.println(") : " + method.getReturnType().getName());
+		}
+	}
+
+
+
+
+	public static void returnParams(Method method) {
+		Class[] parameterType = method.getParameterTypes();
+		for (Class type : parameterType) {
+			if (type.getName().equals("java.lang.String")){
+				System.out.print(" String");
+			} else
+				System.out.print(" " + type.getName());
+		}
+	}
+
+
+
+
+
+
+	public Object invokeMethod (String methodName, Class[] paramTypes, Object[] params) {
+// throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
+
+/*
+* See http://www.oracle.com/technetwork/articles/java/javareflection-1536171.html
+*/
+		Object returnObj = new Object();
+
+		System.out.println(methodName);
+
+		try {
+			Method method = lookAtThis.getMethod(methodName, paramTypes);
+			returnObj = method.invoke(lookAtThis, params);
+		}
+			catch (Throwable e) {
+			System.err.println(e);
+		}
+
+		return returnObj;
 	}
 }
