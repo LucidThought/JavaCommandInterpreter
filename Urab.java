@@ -14,7 +14,8 @@ take command line input according to that command set.
 import java.io.*;
 import java.util.Scanner;
 import java.util.Arrays;
-
+import java.io.File;
+import java.lang.Object;
 
 public class Urab
 {
@@ -22,8 +23,6 @@ public class Urab
 	{   
         boolean verbose = false;
         boolean helpMode = false;
-		Scanner in = new Scanner(System.in);
-		String input = "";
         String jarName = "commands.jar";
         String className = "commands";
 		//printHelp();
@@ -78,49 +77,29 @@ public class Urab
             }
 
         }
+
         if(helpMode == true)
         {
             printHelp();
             System.exit(0);            
         }
-		printStartup();
-        //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
 
-		while(!input.equals("q"))
-		{
-            		System.out.print("> ");
-            		input = in.nextLine();
-			if (input.equals("?"))
-				printHelp();
-			else if (input.equals("f"))
-				printFunctions();
-			else if (input.equals("v"))
-			{
-				if (verbose == false)
-				{
-					verbose = true;
-					System.out.print("Verbose on\n");
-				}
-				else
-				{
-					verbose = false;
-					System.out.print("Verbose off\n");
-				}
-			}
-			else if (input.equals("q"))
-			{
-				System.out.print("bye.\n");
-				System.exit(0);
-			}
-			else
-				parse(verbose, input);
-        	}
-    	}
-    	public static void printStartup()
-    	{
-        	String startup = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.\n<expression>:           Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
-        	System.out.print(startup);
-    	}
+        File f = new File(jarName);
+        if(!f.exists() || f.isDirectory())
+        {
+            System.out.println("Could not load jar file: " + jarName);
+            System.exit(-5);
+        }
+		printStartup();
+        inputLoop(verbose, jarName, className);
+        //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
+    }
+
+    public static void printStartup()
+    {
+    	String startup = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.\n<expression>:           Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
+    	System.out.print(startup);
+    }
 	public static void printHelp()
 	{
 		String help = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n\nThis program interprets commands of the format \'(<method> {arg}*)\' on the command line, finds corresponding methods in <class-name>, and executes them, printing the result to sysout.\n";
@@ -137,6 +116,41 @@ public class Urab
 		System.out.print(functions);
 	}
 
+    public static void inputLoop(boolean verbose, String jarName, String className)
+    {
+        Scanner in = new Scanner(System.in);
+        String input = "";
+        while(!input.equals("q"))
+                {
+                    System.out.print("> ");
+                    input = in.nextLine();
+                    if (input.equals("?"))
+                        printHelp();
+                    else if (input.equals("f"))
+                        printFunctions();
+                    else if (input.equals("v"))
+                    {
+                        if (verbose == false)
+                        {
+                            verbose = true;
+                            System.out.print("Verbose on\n");
+                        }
+                        else
+                        {
+                            verbose = false;
+                            System.out.print("Verbose off\n");
+                        }
+                    }
+                    else if (input.equals("q"))
+                    {
+                        System.out.print("bye.\n");
+                        System.exit(0);
+                    }
+                    else
+                        parse(verbose, input);
+                    }
+        
+    }
     public static boolean parse(boolean verbose, String input)
     {
         //in future, will return a tree
@@ -179,45 +193,30 @@ public class Urab
                         //error out, mismatched bracket
                     }
                 }
-
-
-                /*
-                String[] args = input.split("(\\s+)");
-                boolean changed = false;
-                for(int i = 0; i< args.length; i++)
-                {
-                    if args[i].startsWith("(")
-                    {
-                        changed = true;
-                        int startMerge = i;
-                    }
-                    else if args[i].endsWith(")")
-                    {
-                        int endMerge = i;
-                        String[] temp = String[endMerge-startMerge]
-                        for(int j = 0; j<=temp.length; j++)
-                        {
-                            if (j > startMerge && j <= endMerge)
-                            {
-                                temp[startMerge] = temp[startMerge] + " " + args[j];
-                            }
-                            else if j <= (startMerge)
-                            {
-                                temp[j] = args[j];
-                            }
-                            else if (j > endMerge)
-                            {
-                                temp[j] = args[j+(endMerge-startMerge)];
-                            }
-                        }
-                    }
-                }
-                */
+                /* 
                 for(int i = 0; i< args.length; i++)
                 {
                     System.out.print(args[i] + " ");
                 }
                 System.out.print("\n");
+                */
+            }
+        }
+        else
+         {
+            //get value type
+            if(input.contains(" "))
+            {
+                //error
+            }
+            else if(getType(input).equals("null"))
+            {
+                //error
+                System.out.println("regex not matched");
+            }
+            else
+            {
+                System.out.println(input);
             }
         }
         return true;
@@ -227,5 +226,21 @@ public class Urab
         String[] newArray = Arrays.copyOf(args, args.length+1);
         newArray[args.length] = newArg;
         return newArray;
+    }
+    public static String getType(String val)
+    {
+        if(val.startsWith("\"") && val.endsWith("\""))
+        {
+            return "String";
+        }
+        else if(val.matches("([+]|-)?\\d*[.]?\\d*") == true)
+        {
+            if(val.contains("."))
+            {
+                return "float";
+            }
+            else return "int";
+        }
+        else return "null";
     }
 }
