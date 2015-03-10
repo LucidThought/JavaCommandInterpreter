@@ -19,6 +19,11 @@ import java.lang.Object;
 
 public class Urab
 {
+    static final int OPEN_BRACKET_ERROR = 1;
+    static final int CLOSE_BRACKET_ERROR = 2;
+    static final int INVALID_TYPE = 3;
+    static final int INVALID_SPACE_IN_LITERAL = 4;
+
 	public static void main(String[] args)
 	{   
         boolean verbose = false;
@@ -147,11 +152,11 @@ public class Urab
                         System.exit(0);
                     }
                     else
-                        parse(verbose, input);
+                        parse(verbose, input, input);
                     }
         
     }
-    public static boolean parse(boolean verbose, String input)
+    public static boolean parse(boolean verbose, String input, String fullInput)
     {
         //in future, will return a tree
         //final int MAX_ARGS = 5;
@@ -187,10 +192,12 @@ public class Urab
                     if(brackets < 0)
                     {
                         //error out, mismatched bracket
+                        error(fullInput, CLOSE_BRACKET_ERROR);
                     }
-                    if((i == input.length()-1) && (brackets != 0))
+                    else if((i == input.length()-1) && (brackets != 0))
                     {
                         //error out, mismatched bracket
+                        error(fullInput, OPEN_BRACKET_ERROR);
                     }
                 }
                 /* 
@@ -208,11 +215,12 @@ public class Urab
             if(input.contains(" "))
             {
                 //error
+                error(fullInput, INVALID_SPACE_IN_LITERAL);
             }
             else if(getType(input).equals("null"))
             {
                 //error
-                System.out.println("regex not matched");
+                error(fullInput, INVALID_TYPE, fullInput.indexOf(input));
             }
             else
             {
@@ -242,5 +250,51 @@ public class Urab
             else return "int";
         }
         else return "null";
+    }
+    public static void error(String input, int errorCode)
+    {
+        if(errorCode == OPEN_BRACKET_ERROR)
+        {
+            System.out.println("Unmatched open bracket at offset " + input.indexOf("(") + ".");
+            System.out.println(input);
+            for(int i = 0; i < input.indexOf("(");i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
+        if(errorCode == CLOSE_BRACKET_ERROR)
+        {
+            System.out.println("Unmatched close bracket at offset " + input.lastIndexOf(")") + ".");
+            System.out.println(input);
+            for(int i = 0; i < input.lastIndexOf(")");i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
+        if(errorCode == INVALID_SPACE_IN_LITERAL)
+        {
+            System.out.println("Invalid space in literal at offset " + input.indexOf(" ") + ".");
+            System.out.println(input);
+            for(int i = 0; i < input.indexOf(" ");i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
+    }
+    public static void error(String input, int errorCode, int errorIndex)
+    {
+        if(errorCode == INVALID_TYPE)
+        {
+            System.out.println("Unrecognized variable type at offset " + errorIndex + ".");
+            System.out.println(input);
+            for(int i = 0; i < errorIndex;i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
     }
 }
