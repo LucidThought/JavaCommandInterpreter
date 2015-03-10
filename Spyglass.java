@@ -205,24 +205,91 @@ public class Spyglass
 
 
 
-	public Object invokeMethod (String methodName, Class[] paramTypes, Object[] params) {
+	public Object invokeMethod (String function, String arguments)
+	{
 // throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
 
 /*
 * See http://www.oracle.com/technetwork/articles/java/javareflection-1536171.html
 */
-		Object returnObj = new Object();
+		Object returnObj = null;
 
-		System.out.println(methodName);
+		Method method = summonMethod(function, arguments);
 
-		try {
-			Method method = lookAtThis.getMethod(methodName, paramTypes);
-			returnObj = method.invoke(lookAtThis, params);
-		}
-			catch (Throwable e) {
-			System.err.println(e);
+		if (method != null)
+		{
+			Object[] params = makeParams(arguments);
+			if (method != null)
+			{
+
+			//  "try" statement should be restructured to throw an exception
+				try
+				{
+					returnObj = method.invoke(lookAtThis, params);
+				}
+				catch (Throwable e)
+				{
+					System.err.println(e);
+				}
+			}
 		}
 
 		return returnObj;
 	}
+
+
+	public Object[] makeParams(String arguments)
+	{
+		String[] argArray = arguments.split(" ");
+		Object[] resultArray = new String[argArray.length];
+		int i = 0;
+
+		for (String arg : argArray) {
+			if (checkInteger(arg) == true)
+			{
+				resultArray[i] = new Integer(Integer.parseInt(arg));
+			}
+			else if (checkFloat(arg) == true)
+			{
+				resultArray[i] = new Float(Float.parseFloat(arg));
+			}
+			else
+			{
+				resultArray[i] = new String(arg);
+			}
+
+			i++;
+		}
+
+		return resultArray;
+	}
+
+
+	public Boolean checkInteger(String s)
+	{
+		boolean isInteger = true;
+		try {
+			Integer.parseInt(s);
+		}
+		catch(Exception ex) {
+			isInteger = false;
+		}
+		return isInteger;
+	}
+
+	public Boolean checkFloat(String s)
+	{
+		boolean isFloat = true;
+		try {
+			Float.parseFloat(s);
+		}
+		catch(Exception ex) {
+			isFloat = false;
+		}
+		return isFloat;
+	}
 }
+
+
+
+
