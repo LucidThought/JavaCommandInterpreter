@@ -16,6 +16,9 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.io.File;
 import java.lang.Object;
+import java.util.List;
+import java.util.ArrayList;
+import ParseTreeNode.java;
 
 public class Urab
 {
@@ -158,11 +161,14 @@ public class Urab
                         System.exit(0);
                     }
                     else
-                        parse(verbose, input, input);
+                        ParseTreeNode head = parse(verbose, input, input);
+                        System.out.println(head.toString());
+                        //verify tree is valid
+                        //evaluate tree
                     }
         
     }
-    public static boolean parse(boolean verbose, String input, String fullInput)
+    public static ParseTreeNode parse(boolean verbose, String input, String fullInput)
     {
         //in future, will return a tree
         //final int MAX_ARGS = 5;
@@ -206,6 +212,12 @@ public class Urab
                         error(fullInput, OPEN_BRACKET_ERROR);
                     }
                 }
+                ParseTreeNode[] children = new ParseTreeNode[args.length() - 1];
+                for(int i = 0; i< children.length() - 1; i++)
+                {
+                    children[i] = parse(args[i+1]);
+                }
+                return ParseTreeNode(args[0], children);
                 /* 
                 for(int i = 0; i< args.length; i++)
                 {
@@ -230,10 +242,10 @@ public class Urab
             }
             else
             {
-                System.out.println(input);
+                return(ParseTreeNode(input));
             }
         }
-        return true;
+        return null;
     }
     public static String[] addElement(String[] args, String newArg)
     {
