@@ -193,8 +193,15 @@ public class Spyglass
 	public static void returnParams(Method method) {
 		Class[] parameterType = method.getParameterTypes();
 		for (Class type : parameterType) {
-			if (type.getName().equals("java.lang.String")){
-				System.out.print(" String");
+			if (type.getName().equals("java.lang.String"))
+			{
+				System.out.print(" string");
+			} else if (type.getName().equals("java.lang.Float"))
+			{
+				System.out.print(" float");
+			} else if (type.getName().equals("java.lang.Int"))
+			{
+				System.out.print(" int");
 			} else
 				System.out.print(" " + type.getName());
 		}
