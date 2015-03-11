@@ -55,7 +55,7 @@ public class Spyglass
 				className = className.replace('/', '.');
 				if (className.contains(classFile))
 				{
-					System.out.println(je.getName());
+//					System.out.println(je.getName());
 					lookAtThis = cl.loadClass(className);  
 					break;
 				}
@@ -90,7 +90,7 @@ public class Spyglass
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
-			System.out.println(method.getName());
+//			System.out.println(method.getName());
 			if (method.getName().equals(func))
 			{
 				if (verifyParameters(method, func, arguments))
