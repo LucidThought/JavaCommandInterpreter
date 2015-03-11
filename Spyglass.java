@@ -142,7 +142,7 @@ public class Spyglass
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
-			System.out.println(method.getName());
+//			System.out.println(method.getName());
 			if (method.getName().equals(function))
 			{
 				if (verifyParameters(method, function, arguments))
