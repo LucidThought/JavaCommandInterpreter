@@ -1,30 +1,34 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class ParseTreeNode <T> 
+public class ParseTreeNode 
 {
 	private String data;
 	public boolean isFunction;
-	private ParseTreeNode<T> parent;
-	private List<TreeNode<T>> children;
+	private ParseTreeNode parent;
+	private List<ParseTreeNode> children;
 
-	public ParseTreeNode(T literal)
+	public ParseTreeNode(String literal)
 	{
 		this.data = literal;
-		this.isFunction = true;   
+		this.isFunction = false;  
+		//this.children = new List<ParseTreeNode>(); 
 	}
 
-	public ParseTreeNode(T funName, ParseTreeNode[] children)
+	public ParseTreeNode(String funName, ParseTreeNode[] children)
 	{
 		this.data = funName;
-		this.children = new ArrayList<ParseTreeNode<T>>(Arrays.asList(children));
-		this.isFunction = false;
+		this.children = Arrays.asList(children);
+		this.isFunction = true;
 	}
 
 	public int evaluate(String newValue)
 	{
+
 		this.data = newValue;
-		this.children = this.children.clear();
+		this.children.clear();
+		return 0;
 	}
 
 	public String getData()
@@ -37,14 +41,32 @@ public class ParseTreeNode <T>
 		return this.children.size();	
 	}
 
-	public ParseTreeNode<T>[] getChildren()
+	public List<ParseTreeNode> getChildren()
 	{
-		ParseTreeNode<T>[] childArray = new ParseTreeNode<T>[children.size()];
-		childArray = children.toArray(childArray);
+		/*
+		//ParseTreeNode<T>[] childArray = new ParseTreeNode<T>[children.size()];
+		ParseTreeNode<T>[] childArray = children.toArray(new ParseTreeNode<T>[children.size()]);
 		return childArray;
+		*/
+		return children;
 	}
 
-	public static String getType()
+	public ParseTreeNode getParent()
+	{
+		return this.parent;
+	}
+
+	public String[] getTypes()
+	{
+		String[] types = new String[children.size()];
+		for(int i = 0; i < children.size(); i++)
+		{
+			types[i] = (children.get(i)).getType();
+		}
+		return types;
+	}
+
+	public String getType()
     {
     	if (isFunction == true)
     	{
@@ -66,3 +88,25 @@ public class ParseTreeNode <T>
         }
         else return "null";
     }
+
+    public String toString()
+    {
+    	String string= "";
+    	string += data;
+    	if((children != null) && (children.size() != 0))
+    	{
+    		string += "(";
+    		for(int i = 0; i<children.size();i++)
+    		{
+    			string += ((children.get(i)).toString());
+    			if(i!=children.size()-1)
+    			{
+    				string+=", ";
+    			}
+
+    		}
+   			string += ")";
+    	}
+    	return string;
+    }
+}

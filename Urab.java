@@ -189,7 +189,6 @@ public class Urab
                 {
                     //if a space is found outside of brackets, add substring to array
                     substring = substring + input.charAt(i);
-                    System.out.print(input.charAt(i));
                     if(input.charAt(i) == '(')
                     {
                         brackets++;
@@ -198,11 +197,10 @@ public class Urab
                     {
                         brackets--;
                     }
-                    else if((input.charAt(i) == ' ' && brackets == 0) || (i == input.length()-1))
+                    if((input.charAt(i) == ' ' && brackets == 0) || (i == (input.length()-1)))
                     {
                         args = addElement(args, substring.trim());
                         substring = "";
-                        System.out.print("\n");
                     }
 
                     if(brackets < 0)
@@ -217,7 +215,6 @@ public class Urab
                     }
 
                 }
-                System.out.print("\n");
                 ParseTreeNode[] children = new ParseTreeNode[args.length - 1];
                 for(int i = 0; i< children.length; i++)
                 {
