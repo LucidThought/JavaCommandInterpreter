@@ -18,7 +18,7 @@ import java.io.File;
 import java.lang.Object;
 import java.util.List;
 import java.util.ArrayList;
-import ParseTreeNode.java;
+//import ParseTreeNode.java;
 
 public class Urab
 {
@@ -135,37 +135,40 @@ public class Urab
         Scanner in = new Scanner(System.in);
         String input = "";
         while(!input.equals("q"))
+        {
+            System.out.print("> ");
+            input = in.nextLine();
+            if (input.equals("?"))
+                printHelp();
+            else if (input.equals("f"))
+                printFunctions();
+            else if (input.equals("v"))
+            {
+                if (verbose == false)
                 {
-                    System.out.print("> ");
-                    input = in.nextLine();
-                    if (input.equals("?"))
-                        printHelp();
-                    else if (input.equals("f"))
-                        printFunctions();
-                    else if (input.equals("v"))
-                    {
-                        if (verbose == false)
-                        {
-                            verbose = true;
-                            System.out.print("Verbose on\n");
-                        }
-                        else
-                        {
-                            verbose = false;
-                            System.out.print("Verbose off\n");
-                        }
-                    }
-                    else if (input.equals("q"))
-                    {
-                        System.out.print("bye.\n");
-                        System.exit(0);
-                    }
-                    else
-                        ParseTreeNode head = parse(verbose, input, input);
-                        System.out.println(head.toString());
-                        //verify tree is valid
-                        //evaluate tree
-                    }
+                    verbose = true;
+                    System.out.print("Verbose on\n");
+                }
+                else
+                {
+                    verbose = false;
+                    System.out.print("Verbose off\n");
+                }
+            }
+            else if (input.equals("q"))
+            {
+                System.out.print("bye.\n");
+                System.exit(0);
+            }
+            else
+            {
+                ParseTreeNode head = new ParseTreeNode("");
+                head = parse(verbose, input, input);
+                System.out.println(head.toString());
+                //verify tree is valid
+                //evaluate tree
+            }
+        }
         
     }
     public static ParseTreeNode parse(boolean verbose, String input, String fullInput)
@@ -186,6 +189,7 @@ public class Urab
                 {
                     //if a space is found outside of brackets, add substring to array
                     substring = substring + input.charAt(i);
+                    System.out.print(input.charAt(i));
                     if(input.charAt(i) == '(')
                     {
                         brackets++;
@@ -197,8 +201,8 @@ public class Urab
                     else if((input.charAt(i) == ' ' && brackets == 0) || (i == input.length()-1))
                     {
                         args = addElement(args, substring.trim());
-                        //System.out.print(substring + " ");
                         substring = "";
+                        System.out.print("\n");
                     }
 
                     if(brackets < 0)
@@ -211,13 +215,15 @@ public class Urab
                         //error out, mismatched bracket
                         error(fullInput, OPEN_BRACKET_ERROR);
                     }
+
                 }
-                ParseTreeNode[] children = new ParseTreeNode[args.length() - 1];
-                for(int i = 0; i< children.length() - 1; i++)
+                System.out.print("\n");
+                ParseTreeNode[] children = new ParseTreeNode[args.length - 1];
+                for(int i = 0; i< children.length; i++)
                 {
-                    children[i] = parse(args[i+1]);
+                    children[i] = parse(verbose, args[i+1], fullInput);
                 }
-                return ParseTreeNode(args[0], children);
+                return new ParseTreeNode(args[0], children);
                 /* 
                 for(int i = 0; i< args.length; i++)
                 {
@@ -242,7 +248,7 @@ public class Urab
             }
             else
             {
-                return(ParseTreeNode(input));
+                return(new ParseTreeNode(input));
             }
         }
         return null;
