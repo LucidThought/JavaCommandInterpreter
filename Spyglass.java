@@ -193,8 +193,15 @@ public class Spyglass
 	public static void returnParams(Method method) {
 		Class[] parameterType = method.getParameterTypes();
 		for (Class type : parameterType) {
-			if (type.getName().equals("java.lang.String")){
-				System.out.print(" String");
+			if (type.getName().equals("java.lang.String"))
+			{
+				System.out.print(" string");
+			} else if (type.getName().equals("java.lang.Float"))
+			{
+				System.out.print(" float");
+			} else if (type.getName().equals("java.lang.Int"))
+			{
+				System.out.print(" int");
 			} else
 				System.out.print(" " + type.getName());
 		}
@@ -205,7 +212,7 @@ public class Spyglass
 
 
 
-	public Object invokeMethod (String function, String arguments)
+public String invokeMethod (String function, String arguments)
 	{
 // throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
 
@@ -214,11 +221,11 @@ public class Spyglass
 */
 		Object returnObj = null;
 
-		Method method = summonMethod(function, arguments);
+		Object[] params = makeParams(arguments);
+		Method method = summonMethod(function, paramsToTypes(arguments));
 
 		if (method != null)
 		{
-			Object[] params = makeParams(arguments);
 			if (method != null)
 			{
 
@@ -234,34 +241,100 @@ public class Spyglass
 			}
 		}
 
-		return returnObj;
+		return returnObj.toString();
 	}
+
 
 
 	public Object[] makeParams(String arguments)
 	{
 		String[] argArray = arguments.split(" ");
-		Object[] resultArray = new String[argArray.length];
+		int i = 0;
+
+		if (checkInteger(argArray[0]) == true)
+		{
+			return makeIntArray(argArray);
+		}
+		else if (checkFloat(argArray[0]) == true)
+		{
+			return makeFloatArray(argArray);
+		}
+		else
+		{
+			return argArray;
+		}
+	}
+
+	public Integer[] makeIntArray(String[] argArray)
+	{
+		Integer[] resultArray = new Integer[argArray.length];
+
 		int i = 0;
 
 		for (String arg : argArray) {
 			if (checkInteger(arg) == true)
 			{
-				resultArray[i] = new Integer(Integer.parseInt(arg));
-			}
-			else if (checkFloat(arg) == true)
-			{
-				resultArray[i] = new Float(Float.parseFloat(arg));
+				resultArray[i] = Integer.parseInt(arg);
 			}
 			else
 			{
-				resultArray[i] = new String(arg);
+				return null;
 			}
 
 			i++;
 		}
 
 		return resultArray;
+	}
+
+	public Float[] makeFloatArray(String[] argArray)
+	{
+		Float[] resultArray = new Float[argArray.length];
+
+		int i = 0;
+
+		for (String arg : argArray) {
+			if (checkInteger(arg) == true)
+			{
+				resultArray[i] = Float.parseFloat(arg);
+			}
+			else
+			{
+				return null;
+			}
+
+			i++;
+		}
+
+		return resultArray;
+	}
+
+
+	public String paramsToTypes(String arguments)
+	{
+		StringBuilder values = new StringBuilder();
+		String[] argArray = arguments.split(" ");
+
+		int i = 0;
+
+		for (String arg : argArray) {
+			if (checkInteger(arg) == true)
+			{
+				values.append("int ");
+			}
+			else if (checkFloat(arg) == true)
+			{
+				values.append("float ");
+			}
+			else
+			{
+				values.append("String ");
+			}
+
+			i++;
+		}
+
+		return values.toString();
 	}
 
 
