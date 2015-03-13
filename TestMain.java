@@ -13,13 +13,13 @@ public class TestMain
 			Spyglass test = new Spyglass("commands.jar", "Commands");
 			String inputs = "int int";
 			test.verifyFunction( "div", inputs);
-			test.printMethods (test.getAccessibleMethods());
+			//test.printMethods (test.getAccessibleMethods());
 
 			String retobj = test.invokeMethod("add", "3 2");
-			if (retobj != null)
-			{
+//			if (retobj != null)
+//			{
 				System.out.println(retobj);
-			}
+//			}
 		}
 		catch (FileNotFoundException ef)
 		{
