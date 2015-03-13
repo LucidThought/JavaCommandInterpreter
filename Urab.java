@@ -50,17 +50,17 @@ public class Urab
             {
                 if(args.length>1)
                 {
-			for(int j = 0; j<args.length;j++)
-			{
-				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?")))
-					{
-					    //if -h -v is allowed, this is wrong
-					    //if -h doesnt exit program, this is stupid
-					    System.out.println("Qualifier --help (-h, -?) should not appear with any command-line arguments.");
-					    printSynopsis();
-					    System.exit(-4);
-					}
-			}
+        			for(int j = 0; j<args.length;j++)
+        			{
+        				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?")))
+        					{
+        					    //if -h -v is allowed, this is wrong
+        					    //if -h doesnt exit program, this is stupid
+        					    System.out.println("Qualifier --help (-h, -?) should not appear with any command-line arguments.");
+        					    printSynopsis();
+        					    System.exit(-4);
+        					}
+        			}
                 }
                 helpMode = true;
                 //System.out.print("h\n");
@@ -103,14 +103,6 @@ public class Urab
             System.exit(0);            
         }
 
-        File f = new File(jarName);
-        if(!f.exists() || f.isDirectory())
-        {
-            System.out.println("Could not load jar file: " + jarName);
-            System.exit(-5);
-        }
-		printStartup();
-
         if(className.equals(""))
         {
             className = "Commands";
@@ -119,6 +111,14 @@ public class Urab
         {
             jarName = "commands.jar";
         }
+
+        File f = new File(jarName);
+        if(!f.exists() || f.isDirectory())
+        {
+            System.out.println("Could not load jar file: " + jarName);
+            System.exit(-5);
+        }
+		printStartup();
         inputLoop(verbose, jarName, className);
         //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
     }
@@ -209,7 +209,11 @@ public class Urab
         //in future, will return a tree
         //final int MAX_ARGS = 5;
         input = input.trim();
-        if(input.startsWith("(")) //then must be a funcall
+        if(input.toLowerCase().equals("urab"))
+        {
+            System.out.println("me too thanks\nme too thanks");
+        }
+        else if(input.startsWith("(")) //then must be a funcall
         {
             String funName = "";
             if(input.lastIndexOf(')') > 0)
@@ -281,7 +285,7 @@ public class Urab
                 return(new ParseTreeNode(input));
             }
         }
-        return null;
+        return new ParseTreeNode("U R A B");
     }
     public static String[] addElement(String[] args, String newArg)
     {
