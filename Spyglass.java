@@ -1,3 +1,15 @@
+/*
+CPSC 449 - Java Assignment - Java Command Interpreter
+Anthony Coulthard
+Andrew Howell
+Riley Lahd
+Andrew Lata
+Kendra Wannamaker
+
+
+Spyglass is the class that handles all of the Reflection operations necessary for our program.
+
+*/
 import java.lang.Exception;
 import java.lang.ClassLoader;
 import java.lang.NullPointerException;
