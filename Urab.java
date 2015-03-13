@@ -52,7 +52,7 @@ public class Urab
                 {
         			for(int j = 0; j<args.length;j++)
         			{
-        				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?")))
+        				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?") || args[j].equals("-v") || (args[j].toLowerCase()).equals("--v") || (args[j].toLowerCase()).equals("--verbose")))
         					{
         					    //if -h -v is allowed, this is wrong
         					    //if -h doesnt exit program, this is stupid
