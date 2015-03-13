@@ -285,7 +285,8 @@ public class Urab
                 return(new ParseTreeNode(input));
             }
         }
-        return new ParseTreeNode("U R A B");
+        //System.out.println("U R A B");
+        return null;
     }
     public static String[] addElement(String[] args, String newArg)
     {
