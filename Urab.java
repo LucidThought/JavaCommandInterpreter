@@ -18,6 +18,11 @@ import java.io.File;
 import java.lang.Object;
 import java.util.List;
 import java.util.ArrayList;
+
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.lang.NullPointerException;
+import java.io.FileNotFoundException;
 //import ParseTreeNode.java;
 
 public class Urab
@@ -31,9 +36,8 @@ public class Urab
 	{   
         boolean verbose = false;
         boolean helpMode = false;
-        String jarName = "commands.jar";
-        String className = "commands";
-        Spyglass queenB = new Spyglass()
+        String jarName = "";
+        String className = "";
 		//printHelp();
 		if (args.length == 0)
 		{
@@ -46,17 +50,17 @@ public class Urab
             {
                 if(args.length>1)
                 {
-			for(int j = 0; j<args.length;j++)
-			{
-				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?")))
-					{
-					    //if -h -v is allowed, this is wrong
-					    //if -h doesnt exit program, this is stupid
-					    System.out.println("Qualifier --help (-h, -?) should not appear with any command-line arguments.");
-					    printSynopsis();
-					    System.exit(-4);
-					}
-			}
+        			for(int j = 0; j<args.length;j++)
+        			{
+        				if (!((args[j].toLowerCase()).equals("--help") || (args[j].toLowerCase()).equals("--h") || args[j].equals("-h") || args[j].equals("-hv") || args[j].equals("-vh") || args[j].equals("-?") || args[j].equals("-v") || (args[j].toLowerCase()).equals("--v") || (args[j].toLowerCase()).equals("--verbose")))
+        					{
+        					    //if -h -v is allowed, this is wrong
+        					    //if -h doesnt exit program, this is stupid
+        					    System.out.println("Qualifier --help (-h, -?) should not appear with any command-line arguments.");
+        					    printSynopsis();
+        					    System.exit(-4);
+        					}
+        			}
                 }
                 helpMode = true;
                 //System.out.print("h\n");
@@ -68,7 +72,7 @@ public class Urab
             }
             if((args[i].indexOf('.') >= 0) && (args[i].substring(args[i].lastIndexOf('.'))).equals(".jar"))
             {
-                if(jarName.equals("commands.jar"))
+                if(jarName.equals(""))
                 {
                     jarName = args[i];
                 }   
@@ -80,7 +84,7 @@ public class Urab
             }
             else if(!(args[i].startsWith("-")))
             {
-                if(className.equals("commands") && !jarName.equals("commands.jar"))
+                if(className.equals("") && !jarName.equals(""))
                 {
                     className = args[i];
                 }
@@ -97,6 +101,15 @@ public class Urab
         {
             printHelp();
             System.exit(0);            
+        }
+
+        if(className.equals(""))
+        {
+            className = "Commands";
+        }
+        if(jarName.equals(""))
+        {
+            jarName = "commands.jar";
         }
 
         File f = new File(jarName);
@@ -125,50 +138,69 @@ public class Urab
 		String synopsis = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n";
 		System.out.print(synopsis);
 	}
-	public static void printFunctions()
-	{
-		String functions = "(add string string) : string\n(add float float) : float\n(add int int) : int\n(sub float float) : float\n(sub int int) : int\n(div int int) : int\n(div float float) : float\n(mul float float) : float\n(mul int int) : int\n(inc float) : float\n(inc int) : int\n(dec int) : int\n(dec float) : float\n(len string) : int\n";
-		System.out.print(functions);
-	}
 
     public static void inputLoop(boolean verbose, String jarName, String className)
     {
-        Scanner in = new Scanner(System.in);
-        String input = "";
-        while(!input.equals("q"))
+        try
         {
-            System.out.print("> ");
-            input = in.nextLine();
-            if (input.equals("?"))
-                printHelp();
-            else if (input.equals("f"))
-                printFunctions();
-            else if (input.equals("v"))
+            Spyglass queenB = new Spyglass(jarName, className);
+            Scanner in = new Scanner(System.in);
+            String input = "";
+            while(!input.equals("q"))
             {
-                if (verbose == false)
+                System.out.print("> ");
+                input = in.nextLine();
+                if (input.equals("?"))
+                    printHelp();
+                else if (input.equals("f"))
+                    queenB.printMethods(queenB.getAccessibleMethods());
+                else if (input.equals("v"))
                 {
-                    verbose = true;
-                    System.out.print("Verbose on\n");
+                    if (verbose == false)
+                    {
+                        verbose = true;
+                        System.out.print("Verbose on\n");
+                    }
+                    else
+                    {
+                        verbose = false;
+                        System.out.print("Verbose off\n");
+                    }
+                }
+                else if (input.equals("q"))
+                {
+                    System.out.print("bye.\n");
+                    System.exit(0);
                 }
                 else
                 {
-                    verbose = false;
-                    System.out.print("Verbose off\n");
+                    ParseTreeNode head = new ParseTreeNode("");
+                    head = parse(verbose, input, input);
+                    System.out.println(head.toString());
+                    //verify tree is valid
+                    //evaluate tree
                 }
             }
-            else if (input.equals("q"))
-            {
-                System.out.print("bye.\n");
-                System.exit(0);
-            }
-            else
-            {
-                ParseTreeNode head = new ParseTreeNode("");
-                head = parse(verbose, input, input);
-                System.out.println(head.toString());
-                //verify tree is valid
-                //evaluate tree
-            }
+        } 
+        catch(FileNotFoundException ef)
+        {
+            System.out.println("Could not load jar file: "+ jarName);
+            System.exit(-5);
+        }
+        catch(MalformedURLException ef)
+        {
+            System.out.println("Could not find class: "+ className);
+            System.exit(-6);
+        }
+        catch(IOException ef)
+        {
+            System.out.println("Could not load jar file: "+ jarName);
+            System.exit(-5);
+        }
+        catch(ClassNotFoundException ef)
+        {
+            System.out.println("Could not find class: "+ className);
+            System.exit(-6);
         }
         
     }
@@ -177,7 +209,11 @@ public class Urab
         //in future, will return a tree
         //final int MAX_ARGS = 5;
         input = input.trim();
-        if(input.startsWith("(")) //then must be a funcall
+        if(input.toLowerCase().equals("urab"))
+        {
+            System.out.println("me too thanks\nme too thanks");
+        }
+        else if(input.startsWith("(")) //then must be a funcall
         {
             String funName = "";
             if(input.lastIndexOf(')') > 0)
@@ -249,6 +285,7 @@ public class Urab
                 return(new ParseTreeNode(input));
             }
         }
+        //System.out.println("U R A B");
         return null;
     }
     public static String[] addElement(String[] args, String newArg)

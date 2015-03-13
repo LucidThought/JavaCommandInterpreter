@@ -77,7 +77,7 @@ public class Spyglass
 
 		else
 		{
-			throw new FileNotFoundException("Cannot find the indended class \"" + classFile + "\" in the specified jar");
+			throw new FileNotFoundException();
 		}
 
 	}
