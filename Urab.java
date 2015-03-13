@@ -18,11 +18,6 @@ import java.io.File;
 import java.lang.Object;
 import java.util.List;
 import java.util.ArrayList;
-
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.lang.NullPointerException;
-import java.io.FileNotFoundException;
 //import ParseTreeNode.java;
 
 public class Urab
@@ -38,6 +33,7 @@ public class Urab
         boolean helpMode = false;
         String jarName = "commands.jar";
         String className = "commands";
+        Spyglass queenB = new Spyglass()
 		//printHelp();
 		if (args.length == 0)
 		{
@@ -129,69 +125,50 @@ public class Urab
 		String synopsis = "Synopsis:\n  methods\n  methods { -h | -? | --help }+\n  methods {-v --verbose}* <jar-file> [<class-name>]\nArguments:\n  <jar-file>:   The .jar file that contains the class to load (see next line).\n  <class-name>: The fully qualified class name containing public static command methods to call. [Default=\"Commands\"]\nQualifiers:\n  -v --verbose: Print out detailed errors, warning, and tracking.\n  -h -? --help: Print out a detailed help message.\nSingle-char qualifiers may be grouped; long qualifiers may be truncated to unique prefixes and are not case sensitive.\n";
 		System.out.print(synopsis);
 	}
+	public static void printFunctions()
+	{
+		String functions = "(add string string) : string\n(add float float) : float\n(add int int) : int\n(sub float float) : float\n(sub int int) : int\n(div int int) : int\n(div float float) : float\n(mul float float) : float\n(mul int int) : int\n(inc float) : float\n(inc int) : int\n(dec int) : int\n(dec float) : float\n(len string) : int\n";
+		System.out.print(functions);
+	}
 
     public static void inputLoop(boolean verbose, String jarName, String className)
     {
-        try
+        Scanner in = new Scanner(System.in);
+        String input = "";
+        while(!input.equals("q"))
         {
-            Spyglass queenB = new Spyglass(jarName, className);
-            Scanner in = new Scanner(System.in);
-            String input = "";
-            while(!input.equals("q"))
+            System.out.print("> ");
+            input = in.nextLine();
+            if (input.equals("?"))
+                printHelp();
+            else if (input.equals("f"))
+                printFunctions();
+            else if (input.equals("v"))
             {
-                System.out.print("> ");
-                input = in.nextLine();
-                if (input.equals("?"))
-                    printHelp();
-                else if (input.equals("f"))
-                    queenB.printMethods(queenB.getAccessibleMethods());
-                else if (input.equals("v"))
+                if (verbose == false)
                 {
-                    if (verbose == false)
-                    {
-                        verbose = true;
-                        System.out.print("Verbose on\n");
-                    }
-                    else
-                    {
-                        verbose = false;
-                        System.out.print("Verbose off\n");
-                    }
-                }
-                else if (input.equals("q"))
-                {
-                    System.out.print("bye.\n");
-                    System.exit(0);
+                    verbose = true;
+                    System.out.print("Verbose on\n");
                 }
                 else
                 {
-                    ParseTreeNode head = new ParseTreeNode("");
-                    head = parse(verbose, input, input);
-                    System.out.println(head.toString());
-                    //verify tree is valid
-                    //evaluate tree
+                    verbose = false;
+                    System.out.print("Verbose off\n");
                 }
             }
-        } 
-        catch(FileNotFoundException ef)
-        {
-            System.out.println("Could not load jar file: "+ jarName);
-            System.exit(-5);
-        }
-        catch(MalformedURLException ef)
-        {
-            System.out.println("Could not find class: "+ className);
-            System.exit(-6);
-        }
-        catch(IOException ef)
-        {
-            System.out.println("Could not load jar file: "+ jarName);
-            System.exit(-5);
-        }
-        catch(ClassNotFoundException ef)
-        {
-            System.out.println("Could not find class: "+ className);
-            System.exit(-6);
+            else if (input.equals("q"))
+            {
+                System.out.print("bye.\n");
+                System.exit(0);
+            }
+            else
+            {
+                ParseTreeNode head = new ParseTreeNode("");
+                head = parse(verbose, input, input);
+                System.out.println(head.toString());
+                //verify tree is valid
+                //evaluate tree
+            }
         }
         
     }

@@ -12,39 +12,31 @@ Spyglass is the class that handles all of the Reflection operations necessary fo
 */
 import java.lang.Exception;
 import java.lang.ClassLoader;
-
+import java.lang.NullPointerException;
 import java.net.URLClassLoader;
 import java.net.JarURLConnection;
-
+import java.net.MalformedURLException;
+import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
-
 import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
 import java.util.Enumeration;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
-
 import java.lang.Object;
 import java.net.URL;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import java.lang.SecurityException;
-
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.lang.NullPointerException;
-import java.io.FileNotFoundException;
 
 public class Spyglass
 {
