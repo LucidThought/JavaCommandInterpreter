@@ -176,7 +176,10 @@ public class Urab
                 {
                     ParseTreeNode head = new ParseTreeNode("");
                     head = parse(verbose, input, input);
-                    System.out.println(head.toString());
+                    if(head != null)
+                    {
+                        System.out.println(head.toString());
+                    }
                     //verify tree is valid
                     //evaluate tree
                 }
@@ -256,6 +259,10 @@ public class Urab
                 for(int i = 0; i< children.length; i++)
                 {
                     children[i] = parse(verbose, args[i+1], fullInput);
+                    if(children[i] == null)
+                    {
+                        return null;
+                    }
                 }
                 return new ParseTreeNode(args[0], children);
                 /* 
