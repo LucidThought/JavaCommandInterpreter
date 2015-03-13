@@ -33,6 +33,7 @@ public class Urab
         boolean helpMode = false;
         String jarName = "commands.jar";
         String className = "commands";
+        Spyglass queenB = new Spyglass()
 		//printHelp();
 		if (args.length == 0)
 		{
