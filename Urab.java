@@ -37,7 +37,7 @@ public class Urab
         boolean verbose = false;
         boolean helpMode = false;
         String jarName = "commands.jar";
-        String className = "commands";
+        String className = "Commands";
 		//printHelp();
 		if (args.length == 0)
 		{
@@ -176,6 +176,7 @@ public class Urab
         catch(FileNotFoundException ef)
         {
             System.out.println("Could not load jar file: "+ jarName);
+            ef.printStackTrace();
             System.exit(-5);
         }
         catch(MalformedURLException ef)
