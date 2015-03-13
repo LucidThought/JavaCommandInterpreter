@@ -36,8 +36,8 @@ public class Urab
 	{   
         boolean verbose = false;
         boolean helpMode = false;
-        String jarName = "commands.jar";
-        String className = "Commands";
+        String jarName = "";
+        String className = "";
 		//printHelp();
 		if (args.length == 0)
 		{
@@ -72,7 +72,7 @@ public class Urab
             }
             if((args[i].indexOf('.') >= 0) && (args[i].substring(args[i].lastIndexOf('.'))).equals(".jar"))
             {
-                if(jarName.equals("commands.jar"))
+                if(jarName.equals(""))
                 {
                     jarName = args[i];
                 }   
@@ -84,7 +84,7 @@ public class Urab
             }
             else if(!(args[i].startsWith("-")))
             {
-                if(className.equals("commands") && !jarName.equals("commands.jar"))
+                if(className.equals("") && !jarName.equals(""))
                 {
                     className = args[i];
                 }
@@ -110,6 +110,15 @@ public class Urab
             System.exit(-5);
         }
 		printStartup();
+
+        if(className.equals(""))
+        {
+            className = "Commands";
+        }
+        if(jarName.equals(""))
+        {
+            jarName = "commands.jar";
+        }
         inputLoop(verbose, jarName, className);
         //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
     }
@@ -176,7 +185,6 @@ public class Urab
         catch(FileNotFoundException ef)
         {
             System.out.println("Could not load jar file: "+ jarName);
-            ef.printStackTrace();
             System.exit(-5);
         }
         catch(MalformedURLException ef)
