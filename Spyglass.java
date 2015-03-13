@@ -31,7 +31,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.*;
+//import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,20 +120,31 @@ public class Spyglass
 		Class[] parameterType = method.getParameterTypes();
 		String[] argArray = arguments.split(" ");
 		int index = 0;
-		boolean isLegit = false;
 		for( Class parameter : parameterType)
 		{
+			System.out.println(parameter.getName());
+
 			if (parameter.getName().equals(argArray[index]) == false)
 			{
-				return false;
+				if ( (parameter.getName().equals("java.lang.Integer")==true) && (argArray[index].equals("int")==true) )
+				{
+					index++;
+					continue;
+				}
+				else if ( (parameter.getName().equals("java.lang.Float")==true) && (argArray[index].equals("float")==true) )
+				{
+					index++;
+					continue;
+				}
+				else
+				{
+					return false;
+				}
 			}
-			else
-			{
-			isLegit = true;
-			}
+
 			index++;
 		}
-		return isLegit;
+		return true;
 	}
 
 	public String verifyReturns(String function, String arguments)
@@ -180,7 +191,7 @@ public class Spyglass
 		
 			for (Method method : lookAtThis.getDeclaredMethods()) {
 			    int modifiers = method.getModifiers();
-			    if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
+			    if (Modifier.isPublic(modifiers)) {
 				result.add(method);
 			    }
 			}
@@ -194,10 +205,11 @@ public class Spyglass
 		for (Method method : methods) {
 			System.out.print("(" + method.getName());
 			returnParams(method);
-			System.out.println(") : " + method.getReturnType().getName());
+			System.out.print(") : ");
+			returnReturns(method);
+			System.out.println();
 		}
 	}
-
 
 	public static void returnParams(Method method) {
 		Class[] parameterType = method.getParameterTypes();
@@ -208,12 +220,28 @@ public class Spyglass
 			} else if (type.getName().equals("java.lang.Float"))
 			{
 				System.out.print(" float");
-			} else if (type.getName().equals("java.lang.Int"))
+			} else if (type.getName().equals("java.lang.Integer"))
 			{
 				System.out.print(" int");
 			} else
 				System.out.print(" " + type.getName());
 		}
+	}
+
+	public static void returnReturns(Method method) {
+		String returnType = method.getReturnType().getName();
+
+		if (returnType.equals("java.lang.String"))
+		{
+			System.out.print("string");
+		} else if (returnType.equals("java.lang.Float"))
+		{
+			System.out.print("float");
+		} else if (returnType.equals("java.lang.Integer"))
+		{
+			System.out.print("int");
+		} else
+			System.out.print(returnType);
 	}
 
 
@@ -235,18 +263,14 @@ public String invokeMethod (String function, String arguments)
 
 		if (method != null)
 		{
-			if (method != null)
+		//  "try" statement should be restructured to throw an exception
+			try
 			{
-
-			//  "try" statement should be restructured to throw an exception
-				try
-				{
-					returnObj = method.invoke(lookAtThis, params);
-				}
-				catch (Throwable e)
-				{
-					System.err.println(e);
-				}
+				returnObj = method.invoke(lookAtThis, params);
+			}
+			catch (Throwable e)
+			{
+				System.err.println(e);
 			}
 		}
 
@@ -273,7 +297,7 @@ public String invokeMethod (String function, String arguments)
 			}
 			else
 			{
-				values.append("String ");
+				values.append("java.lang.String ");
 			}
 
 			i++;
