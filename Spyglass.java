@@ -167,6 +167,9 @@ public class Spyglass
 		return null;
 	}
 
+
+
+
 	/*
 	* See http://stackoverflow.com/questions/1857775/getting-a-list-of-accessible-methods-for-a-given-class-via-reflection
 	*/
@@ -181,14 +184,10 @@ public class Spyglass
 				result.add(method);
 			    }
 			}
-
-			
 		
 
 		return result.toArray(new Method[result.size()]);
 	}
-
-
 
 
 	public static void printMethods(Method[] methods) {
@@ -198,8 +197,6 @@ public class Spyglass
 			System.out.println(") : " + method.getReturnType().getName());
 		}
 	}
-
-
 
 
 	public static void returnParams(Method method) {
@@ -258,70 +255,6 @@ public String invokeMethod (String function, String arguments)
 
 
 
-	public Object[] makeParams(String arguments)
-	{
-		String[] argArray = arguments.split(" ");
-		int i = 0;
-
-		if (checkInteger(argArray[0]) == true)
-		{
-			return makeIntArray(argArray);
-		}
-		else if (checkFloat(argArray[0]) == true)
-		{
-			return makeFloatArray(argArray);
-		}
-		else
-		{
-			return argArray;
-		}
-	}
-
-	public Integer[] makeIntArray(String[] argArray)
-	{
-		Integer[] resultArray = new Integer[argArray.length];
-
-		int i = 0;
-
-		for (String arg : argArray) {
-			if (checkInteger(arg) == true)
-			{
-				resultArray[i] = Integer.parseInt(arg);
-			}
-			else
-			{
-				return null;
-			}
-
-			i++;
-		}
-
-		return resultArray;
-	}
-
-	public Float[] makeFloatArray(String[] argArray)
-	{
-		Float[] resultArray = new Float[argArray.length];
-
-		int i = 0;
-
-		for (String arg : argArray) {
-			if (checkInteger(arg) == true)
-			{
-				resultArray[i] = Float.parseFloat(arg);
-			}
-			else
-			{
-				return null;
-			}
-
-			i++;
-		}
-
-		return resultArray;
-	}
-
-
 	public String paramsToTypes(String arguments)
 	{
 		StringBuilder values = new StringBuilder();
@@ -349,6 +282,35 @@ public String invokeMethod (String function, String arguments)
 		return values.toString();
 	}
 
+
+
+	public Object[] makeParams(String arguments)
+	{
+		String[] argArray = arguments.split(" ");
+		Object [] resultArray = new Object [argArray.length];
+		int i = 0;
+
+
+		for (String arg : argArray)
+		{
+			if (checkInteger(arg) == true)
+			{
+				resultArray[i] = new Integer(Integer.parseInt(arg));
+			}
+			else if (checkFloat(arg) == true)
+			{
+				resultArray[i] = new Float(Float.parseFloat(arg));
+			}
+			else
+			{
+				resultArray[i] = new String(arg);
+			}
+
+			i++;
+		}
+
+		return resultArray;
+	}
 
 	public Boolean checkInteger(String s)
 	{
