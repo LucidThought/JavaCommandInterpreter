@@ -81,7 +81,8 @@ public class Spyglass
 		}
 
 	}
-	
+
+// This function returns a boolean verifying whether the intended class exists inside of the defined jar
 	public boolean verifyClass(String jar, String commandObject) throws FileNotFoundException, IOException
 	{
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(jar));
