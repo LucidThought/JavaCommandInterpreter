@@ -122,8 +122,6 @@ public class Spyglass
 		int index = 0;
 		for( Class parameter : parameterType)
 		{
-			System.out.println(parameter.getName());
-
 			if (parameter.getName().equals(argArray[index]) == false)
 			{
 				if ( (parameter.getName().equals("java.lang.Integer")==true) && (argArray[index].equals("int")==true) )
