@@ -19,6 +19,7 @@ import java.lang.Object;
 import java.util.List;
 import java.util.ArrayList;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.lang.NullPointerException;
@@ -31,6 +32,7 @@ public class Urab
     static final int CLOSE_BRACKET_ERROR = 2;
     static final int INVALID_TYPE = 3;
     static final int INVALID_SPACE_IN_LITERAL = 4;
+    static final int INVALID_FUNCTION_CALL = 5;
 
 	public static void main(String[] args)
 	{   
@@ -149,7 +151,7 @@ public class Urab
             while(!input.equals("q"))
             {
                 System.out.print("> ");
-                input = in.nextLine();
+                input = ((in.nextLine()).replaceAll("\\s+", " ")).trim();
                 if (input.equals("?"))
                     printHelp();
                 else if (input.equals("f"))
@@ -175,34 +177,67 @@ public class Urab
                 else
                 {
                     ParseTreeNode head = new ParseTreeNode("");
-                    head = parse(verbose, input, input);
+                    head = parse(verbose, input, input); //create a parse tree out of input
                     if(head != null)
                     {
-                        System.out.println(head.toString());
+                        try
+                        {
+                            System.out.println(head.toString());
+                            //verify tree is valid
+                            System.out.println(verifyTree(head, queenB));
+                            //evaluate tree
+
+                        }
+                        catch(InvalidFunctionCallException ef)
+                        {
+                            error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage()));
+                        }
+                        catch(SecurityException ef)
+                        {
+                            System.out.println("How did you do this. (urab)");
+                        }
+                        catch(Exception ef)
+                        {
+                            System.out.println("How did you do this. (urab)");
+                        }
                     }
-                    //verify tree is valid
-                    //evaluate tree
                 }
             }
         } 
         catch(FileNotFoundException ef)
         {
             System.out.println("Could not load jar file: "+ jarName);
+            if(verbose == true)
+            {
+                ef.printStackTrace();
+            }
             System.exit(-5);
         }
         catch(MalformedURLException ef)
         {
             System.out.println("Could not find class: "+ className);
+            if(verbose == true)
+            {
+                ef.printStackTrace();
+            }
             System.exit(-6);
         }
         catch(IOException ef)
         {
             System.out.println("Could not load jar file: "+ jarName);
+            if(verbose == true)
+            {
+                ef.printStackTrace();
+            }
             System.exit(-5);
         }
         catch(ClassNotFoundException ef)
         {
             System.out.println("Could not find class: "+ className);
+            if(verbose == true)
+            {
+                ef.printStackTrace();
+            }
             System.exit(-6);
         }
         
@@ -295,6 +330,41 @@ public class Urab
         //System.out.println("U R A B");
         return null;
     }
+    public static String verifyTree(ParseTreeNode head, Spyglass queenB) throws InvalidFunctionCallException
+    {
+        String[] childTypes = new String[head.numChildren()];
+        String types = "";
+        String function = head.getData();
+        for(int i = 0; i < childTypes.length; i++)
+        {
+            childTypes[i]=((head.getChildren()).get(i)).getType();
+            if(childTypes[i].equals("function"))
+            {
+                childTypes[i] = verifyTree((head.getChildren()).get(i), queenB);
+            }
+            else if(childTypes[i].equals("null"))
+            {
+                return null;
+            }
+            if(childTypes[i] == null)
+            {
+                return null;
+            }
+        }
+        for(int i = 0; i < childTypes.length; i++)
+        {
+            types = types + childTypes[i] + " ";
+        }
+
+        if(queenB.verifyFunction(function, types) == true)
+        {
+            return queenB.verifyReturns(function, types);
+        }
+        else
+        {
+            throw new InvalidFunctionCallException(head.toString());
+        }
+    }
     public static String[] addElement(String[] args, String newArg)
     {
         String[] newArray = Arrays.copyOf(args, args.length+1);
@@ -355,6 +425,16 @@ public class Urab
         if(errorCode == INVALID_TYPE)
         {
             System.out.println("Unrecognized variable type at offset " + errorIndex + ".");
+            System.out.println(input);
+            for(int i = 0; i < errorIndex;i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
+        if(errorCode == INVALID_FUNCTION_CALL)
+        {
+            System.out.println("Invalid function call at offset " + errorIndex + ".");
             System.out.println(input);
             for(int i = 0; i < errorIndex;i++)
             {
