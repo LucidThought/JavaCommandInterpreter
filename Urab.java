@@ -33,6 +33,7 @@ public class Urab
     static final int INVALID_TYPE = 3;
     static final int INVALID_SPACE_IN_LITERAL = 4;
     static final int INVALID_FUNCTION_CALL = 5;
+    static final int INVALID_CHAR_IN_LITERAL = 6;
 
 	public static void main(String[] args)
 	{   
@@ -327,8 +328,23 @@ public class Urab
             //get value type
             if(input.contains(" "))
             {
-                //error
-                error(fullInput, INVALID_SPACE_IN_LITERAL);
+                if(getType(input).equals("String"))
+                {/*
+                    String inner = input.substring(1, input.length()-1);
+                    for(int i = 0; i < inner.length(); i++)
+                    {
+                        if(inner.contains("\""))
+                        {
+                            error(fullInput, INVALID_CHAR_IN_LITERAL, i+1);
+                            break;
+                        }
+                    }*/
+                    return(new ParseTreeNode(input));
+                }
+                else
+                {
+                    error(fullInput, INVALID_SPACE_IN_LITERAL);
+                }
             }
             else if(getType(input).equals("null"))
             {
@@ -480,6 +496,16 @@ public class Urab
         if(errorCode == INVALID_FUNCTION_CALL)
         {
             System.out.println("Invalid function call at offset " + errorIndex + ".");
+            System.out.println(input);
+            for(int i = 0; i < errorIndex;i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+        }
+        if(errorCode == INVALID_CHAR_IN_LITERAL)
+        {
+            System.out.println("Invalid character in literal at offset " + errorIndex + ".");
             System.out.println(input);
             for(int i = 0; i < errorIndex;i++)
             {
