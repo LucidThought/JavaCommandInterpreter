@@ -82,13 +82,12 @@ public class Spyglass
 
 	}
 
-// This function returns a boolean verifying whether the intended class exists inside of the defined jar
+// verifyClass returns a boolean verifying whether the intended class exists inside of the defined jar
 	public boolean verifyClass(String jar, String commandObject) throws FileNotFoundException, IOException
 	{
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(jar));
 		for(ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
 		{
-//			System.out.println(entry.getName());
 			if(entry.getName().endsWith(".class") && !entry.isDirectory() && (entry.getName().contains(commandObject+".class"))) 
 			{
 				return true;
@@ -97,13 +96,12 @@ public class Spyglass
 		return false;
 	}
 
-
+// verifyFunction returns a boolean verifying whether the intended function exists inside the defined class
 	public boolean verifyFunction(String func, String arguments) throws SecurityException
 	{
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
-//			System.out.println(method.getName());
 			if (method.getName().equals(func))
 			{
 				if (verifyParameters(method, func, arguments))
@@ -115,7 +113,8 @@ public class Spyglass
 		}
 		return false;
 	}
-				
+
+// verifyParameters returns a boolean reflecting whether or not the intended function accepts the given parameters				
 	public boolean verifyParameters(Method method, String func, String arguments)
 	{
 		Class[] parameterType = method.getParameterTypes();
@@ -148,6 +147,7 @@ public class Spyglass
 		return true;
 	}
 
+// verifyReturns returns a string representation of the given methods return type
 	public String verifyReturns(String function, String arguments)
 	{
 		Method theMethod = summonMethod(function, arguments);
@@ -161,12 +161,12 @@ public class Spyglass
 		}
 	}
 
+// summonMethod returns a pointer to the method on which reflection is intended
 	public Method summonMethod(String function, String arguments) throws SecurityException
 	{
 		Method[] classMethods = lookAtThis.getMethods();
 		for(Method method : classMethods)
 		{
-//			System.out.println(method.getName());
 			if (method.getName().equals(function))
 			{
 				if (verifyParameters(method, function, arguments))
@@ -181,11 +181,10 @@ public class Spyglass
 
 
 
-
+// getAccessibleMethods returns a list of pointers to all of the public methods inside the class
 	/*
 	* See http://stackoverflow.com/questions/1857775/getting-a-list-of-accessible-methods-for-a-given-class-via-reflection
 	*/
-
 	public Method[] getAccessibleMethods()
 	{
 		List<Method> result = new ArrayList<Method>();
@@ -201,7 +200,7 @@ public class Spyglass
 		return result.toArray(new Method[result.size()]);
 	}
 
-
+// printMethods prints a list of available functions, their input types, and their return types
 	public static void printMethods(Method[] methods) {
 		for (Method method : methods) {
 			System.out.print("(" + method.getName());
@@ -212,6 +211,7 @@ public class Spyglass
 		}
 	}
 
+// returnParams prints the appropriate parameter data types on a given method
 	public static void returnParams(Method method) {
 		Class[] parameterType = method.getParameterTypes();
 		for (Class type : parameterType) {
@@ -229,6 +229,7 @@ public class Spyglass
 		}
 	}
 
+// returnReturns prints the appropriate method's return type
 	public static void returnReturns(Method method) {
 		String returnType = method.getReturnType().getName();
 
@@ -249,7 +250,7 @@ public class Spyglass
 
 
 
-
+// invokeMethod finds the intended method with summonMethod, then executes and returns a string of the output of that function
 public String invokeMethod (String function, String arguments)
 	{
 // throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
@@ -279,7 +280,7 @@ public String invokeMethod (String function, String arguments)
 	}
 
 
-
+// paramsToTypes takes the string containing the intended arguments and return a string of their intended types
 	public String paramsToTypes(String arguments)
 	{
 		StringBuilder values = new StringBuilder();
@@ -308,7 +309,7 @@ public String invokeMethod (String function, String arguments)
 	}
 
 
-
+// makeParams takes the string containing teh intended arguments and returns an array of the Objects for each argument
 	public Object[] makeParams(String arguments)
 	{
 		String[] argArray = arguments.split(" ");
@@ -337,6 +338,7 @@ public String invokeMethod (String function, String arguments)
 		return resultArray;
 	}
 
+// checkInteger checks if the given string is an integer and returns true or false accordingly
 	public Boolean checkInteger(String s)
 	{
 		boolean isInteger = true;
@@ -349,6 +351,7 @@ public String invokeMethod (String function, String arguments)
 		return isInteger;
 	}
 
+// checkFloat checks if the given string is a floating point number and returns true or false accordingly
 	public Boolean checkFloat(String s)
 	{
 		boolean isFloat = true;
