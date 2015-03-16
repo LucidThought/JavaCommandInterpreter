@@ -185,20 +185,33 @@ public class Urab
                             System.out.println(head.toString());
                             //verify tree is valid
                             System.out.println(verifyTree(head, queenB));
+                            System.out.println(executeTree(head, queenB));
                             //evaluate tree
 
                         }
                         catch(InvalidFunctionCallException ef)
                         {
                             error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage()));
+                            if(verbose == true)
+                            {
+                                ef.printStackTrace();
+                            }
                         }
                         catch(SecurityException ef)
                         {
                             System.out.println("How did you do this. (urab)");
+                            if(verbose == true)
+                            {
+                                ef.printStackTrace();
+                            }
                         }
                         catch(Exception ef)
                         {
                             System.out.println("How did you do this. (urab)");
+                            if(verbose == true)
+                            {
+                                ef.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -332,6 +345,10 @@ public class Urab
     }
     public static String verifyTree(ParseTreeNode head, Spyglass queenB) throws InvalidFunctionCallException
     {
+        if(head.isFunction == false)
+        {
+            return head.getType();
+        }
         String[] childTypes = new String[head.numChildren()];
         String types = "";
         String function = head.getData();
@@ -364,6 +381,34 @@ public class Urab
         {
             throw new InvalidFunctionCallException(head.toString());
         }
+    }
+    public static String executeTree(ParseTreeNode head, Spyglass queenB)
+    {
+        if(head.isFunction == false)
+        {
+            return head.getData();
+        }
+        String[] childVal = new String[head.numChildren()];
+        String values = "";
+        String function = head.getData();
+        for(int i = 0; i < childVal.length; i++)
+        {
+            if((head.getChildren().get(i)).isFunction)
+            {
+                executeTree((head.getChildren().get(i)), queenB);
+            }
+            childVal[i]=((head.getChildren()).get(i)).getData();
+            if(childVal[i] == null)
+            {
+                return null;
+            }
+        }
+        for(int i = 0; i < childVal.length; i++)
+        {
+            values = values + childVal[i] + " ";
+        }
+        head.evaluate(queenB.invokeMethod(function, values));
+        return head.getData();
     }
     public static String[] addElement(String[] args, String newArg)
     {

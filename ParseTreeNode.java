@@ -27,7 +27,8 @@ public class ParseTreeNode
 	{
 
 		this.data = newValue;
-		this.children.clear();
+		this.isFunction = false;
+		//this.children.clear();
 		return 0;
 	}
 
@@ -38,6 +39,10 @@ public class ParseTreeNode
 
 	public int numChildren()
 	{
+		if(!this.isFunction)
+		{
+			return 0;
+		}
 		return this.children.size();	
 	}
 
@@ -92,21 +97,20 @@ public class ParseTreeNode
     public String toString()
     {
     	String string= "";
-    	string += data;
+    	if(this.isFunction){string += "(";}
+    	string+= data + " ";
     	if((children != null) && (children.size() != 0))
     	{
-    		string += "(";
     		for(int i = 0; i<children.size();i++)
     		{
     			string += ((children.get(i)).toString());
-    			if(i!=children.size()-1)
-    			{
-    				string+=", ";
-    			}
-
     		}
-   			string += ")";
     	}
+    	if(this.isFunction)
+    	{
+    		string = string.substring(0, string.length()-1);
+    		string += ")";
+		}
     	return string;
     }
 }
