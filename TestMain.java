@@ -12,10 +12,10 @@ public class TestMain
 		{
 			Spyglass test = new Spyglass("commands.jar", "Commands");
 			String inputs = "int int";
-			test.verifyFunction( "div", inputs);
+			System.out.println(test.verifyFunction( "mold", inputs));
 			//test.printMethods (test.getAccessibleMethods());
 
-			String retobj = test.invokeMethod("add", "3 2");
+			String retobj = test.invokeMethod("add", "nook nok");
 //			if (retobj != null)
 //			{
 				System.out.println(retobj);
