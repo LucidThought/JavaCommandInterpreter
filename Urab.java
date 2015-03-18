@@ -65,15 +65,19 @@ public class Urab
         					}
         			}
                 }
+                if(args[i].equals("-hv") || args[i].equals("-vh"))
+                {
+                    verbose = true;
+                }
                 helpMode = true;
                 //System.out.print("h\n");
             }
-            if( ((args[i].toLowerCase())).equals("--verbose") || (args[i].toLowerCase()).equals("--v") || args[i].equals("-v") || args[i].equals("-hv") || args[i].equals("-vh"))
+            else if( ((args[i].toLowerCase())).equals("--verbose") || (args[i].toLowerCase()).equals("--v") || args[i].equals("-v"))
             {
                 verbose = true;
                 //System.out.print("v\n");
             }
-            if((args[i].indexOf('.') >= 0) && (args[i].substring(args[i].lastIndexOf('.'))).equals(".jar"))
+            else if((args[i].indexOf('.') >= 0) && (args[i].substring(args[i].lastIndexOf('.'))).equals(".jar"))
             {
                 if(jarName.equals(""))
                 {
@@ -85,16 +89,35 @@ public class Urab
                     System.exit(-5);
                 }
             }
+            else if((args[i].startsWith("--")))
+            {
+                System.out.println("Unrecognized qualifier: " + args[i]);
+                printSynopsis();
+                System.exit(-1);
+
+            }
+            else if((args[i].startsWith("-")))
+            {
+                System.out.println("Unrecognized qualifier \'"+ ((args[i]).replaceAll("[-|v|V|h|H]", "")).substring(0, 1) +"\' in " + args[i]);
+                printSynopsis();
+                System.exit(-1);
+
+            }
             else if(!(args[i].startsWith("-")))
             {
                 if(className.equals("") && !jarName.equals(""))
                 {
                     className = args[i];
                 }
+                else if(jarName.equals(""))
+                {
+
+                }
                 else
                 {
-                    System.out.println("Could not find class: " + args[i]);
-                    System.exit(-6);
+                    System.out.println("This program takes at most two command line arguments. " + args[i]);
+                    printSynopsis();
+                    System.exit(-2);
                 }
             }
 
@@ -259,7 +282,6 @@ public class Urab
     public static ParseTreeNode parse(boolean verbose, String input, String fullInput)
     {
         //in future, will return a tree
-        //final int MAX_ARGS = 5;
         input = input.trim();
         if(input.toLowerCase().equals("urab"))
         {
