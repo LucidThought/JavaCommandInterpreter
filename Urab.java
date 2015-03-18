@@ -34,6 +34,8 @@ public class Urab
     static final int INVALID_SPACE_IN_LITERAL = 4;
     static final int INVALID_FUNCTION_CALL = 5;
     static final int INVALID_CHAR_IN_LITERAL = 6;
+    static final int END_BRACKET_ERROR = 7;
+    static final int ILLEGAL_FUN_NAME = 8;
 
 	public static void main(String[] args)
 	{   
@@ -174,10 +176,16 @@ public class Urab
             String input = "";
             while(!input.equals("q"))
             {
+                mainBreak:
                 System.out.print("> ");
                 input = ((in.nextLine()).replaceAll("\\s+", " ")).trim();
+
                 if (input.equals("?"))
                     printHelp();
+                else if (input.equals(""))
+                {
+                    //do nothing
+                }
                 else if (input.equals("f"))
                     queenB.printMethods(queenB.getAccessibleMethods());
                 else if (input.equals("v"))
@@ -215,7 +223,7 @@ public class Urab
                         }
                         catch(InvalidFunctionCallException ef)
                         {
-                            error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage()));
+                            error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage()), verbose);
                             if(verbose == true)
                             {
                                 ef.printStackTrace();
@@ -290,39 +298,54 @@ public class Urab
         else if(input.startsWith("(")) //then must be a funcall
         {
             String funName = "";
+            if(!input.endsWith(")"))
+            {
+                error(fullInput, END_BRACKET_ERROR, verbose);
+                return null;
+            }
             if(input.lastIndexOf(')') > 0)
             {
                 input = input.substring(1, input.lastIndexOf(')'));
                 String[] args = {};
                 int brackets = 0;
                 String substring = "";
+                boolean quotes = false;
                 for(int i = 0; i<input.length(); i++)
                 {
                     //if a space is found outside of brackets, add substring to array
                     substring = substring + input.charAt(i);
-                    if(input.charAt(i) == '(')
+                    if(input.charAt(i) == '(' && quotes == false)
                     {
                         brackets++;
                     }
-                    else if(input.charAt(i) == ')')
+                    else if(input.charAt(i) == ')' && quotes == false)
                     {
                         brackets--;
                     }
-                    if((input.charAt(i) == ' ' && brackets == 0) || (i == (input.length()-1)))
+
+                    if(input.charAt(i) == '\"')
+                    {
+                        quotes = !quotes;
+                    }
+
+                    if((input.charAt(i) == ' ' && brackets == 0 && quotes == false) || (i == (input.length()-1)))
                     {
                         args = addElement(args, substring.trim());
+                        //System.out.println(substring);
                         substring = "";
                     }
 
                     if(brackets < 0)
                     {
                         //error out, mismatched bracket
-                        error(fullInput, CLOSE_BRACKET_ERROR);
+                        error(fullInput, CLOSE_BRACKET_ERROR, verbose);
+                        return null;
                     }
                     else if((i == input.length()-1) && (brackets != 0))
                     {
                         //error out, mismatched bracket
-                        error(fullInput, OPEN_BRACKET_ERROR);
+                        error(fullInput, OPEN_BRACKET_ERROR, verbose);
+                        return null;
                     }
 
                 }
@@ -335,14 +358,19 @@ public class Urab
                         return null;
                     }
                 }
-                return new ParseTreeNode(args[0], children);
-                /* 
-                for(int i = 0; i< args.length; i++)
+                if(validateFunctionName(args[0]) == false)
                 {
-                    System.out.print(args[i] + " ");
+                    //error
+                    error(fullInput, ILLEGAL_FUN_NAME, fullInput.indexOf(args[0]), verbose);
+                    return null;
                 }
-                System.out.print("\n");
-                */
+                return new ParseTreeNode(args[0], children);
+            }
+            else
+            {
+                //error out, mismatched bracket
+                error(fullInput, CLOSE_BRACKET_ERROR, verbose);
+                return null;
             }
         }
         else
@@ -350,6 +378,7 @@ public class Urab
             //get value type
             if(input.contains(" "))
             {
+                //System.out.println(input + " : " + getType(input));
                 if(getType(input).equals("String"))
                 {/*
                     String inner = input.substring(1, input.length()-1);
@@ -365,13 +394,15 @@ public class Urab
                 }
                 else
                 {
-                    error(fullInput, INVALID_SPACE_IN_LITERAL);
+                    error(fullInput, INVALID_SPACE_IN_LITERAL, verbose);
+                    return null;
                 }
             }
             else if(getType(input).equals("null"))
             {
                 //error
-                error(fullInput, INVALID_TYPE, fullInput.indexOf(input));
+                error(fullInput, INVALID_TYPE, fullInput.indexOf(input), verbose);
+                return null;
             }
             else
             {
@@ -466,11 +497,14 @@ public class Urab
             {
                 return "float";
             }
-            else return "int";
+            else if(val.length() > 0)
+            {
+                return "int";
+            }
         }
-        else return "null";
+        return "null";
     }
-    public static void error(String input, int errorCode)
+    public static void error(String input, int errorCode, boolean verbose)
     {
         if(errorCode == OPEN_BRACKET_ERROR)
         {
@@ -481,6 +515,14 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
         if(errorCode == CLOSE_BRACKET_ERROR)
         {
@@ -491,6 +533,14 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
         if(errorCode == INVALID_SPACE_IN_LITERAL)
         {
@@ -501,9 +551,35 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
+        }
+        if(errorCode == END_BRACKET_ERROR)
+        {
+            System.out.println("Funcall does not end in bracket.");
+            System.out.println(input);
+            for(int i = 0; i < input.length();i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
     }
-    public static void error(String input, int errorCode, int errorIndex)
+    public static void error(String input, int errorCode, int errorIndex, boolean verbose)
     {
         if(errorCode == INVALID_TYPE)
         {
@@ -514,8 +590,16 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
-        if(errorCode == INVALID_FUNCTION_CALL)
+        else if(errorCode == INVALID_FUNCTION_CALL)
         {
             System.out.println("Invalid function call at offset " + errorIndex + ".");
             System.out.println(input);
@@ -524,8 +608,16 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
-        if(errorCode == INVALID_CHAR_IN_LITERAL)
+        else if(errorCode == INVALID_CHAR_IN_LITERAL)
         {
             System.out.println("Invalid character in literal at offset " + errorIndex + ".");
             System.out.println(input);
@@ -534,6 +626,44 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
         }
+        else if(errorCode == ILLEGAL_FUN_NAME)
+        {
+            System.out.println("Illegal characters in function name at index " + errorIndex + ".");
+            System.out.println(input);
+            for(int i = 0; i < errorIndex;i++)
+            {
+                System.out.print("-");
+            }
+            System.out.println("^");
+            try
+            {
+                if(verbose){throw new Exception();}
+            }
+            catch (Exception ef)
+            {
+                ef.printStackTrace();
+            }
+        }
+    }
+    public static boolean validateFunctionName(String function)
+    {
+        if(!(function.substring(0,1).matches("_|[A-Z]|[a-z]")))
+        {
+            return false;
+        }
+        if(!(function.matches("[_|\\w]+")))
+        {
+            return false;
+        }
+        return true;
     }
 }
