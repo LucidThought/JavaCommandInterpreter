@@ -15,7 +15,7 @@ public class TestMain
 			System.out.println(test.verifyFunction( "mold", inputs));
 			//test.printMethods (test.getAccessibleMethods());
 
-			String retobj = test.invokeMethod("add", "nook nok");
+			String retobj = test.invokeMethod("add", "no ok nok");
 //			if (retobj != null)
 //			{
 				System.out.println(retobj);
