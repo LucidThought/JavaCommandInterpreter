@@ -134,6 +134,11 @@ public class Spyglass
 					index++;
 					continue;
 				}
+				else if ((parameter.getName().equals("java.lang.String")==true) && (argArray[index].equals("String")==true))
+				{
+					index++;
+					continue;
+				}
 				else
 				{
 					return false;
