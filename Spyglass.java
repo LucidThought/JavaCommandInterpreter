@@ -315,7 +315,16 @@ public String invokeMethod (String function, String arguments)
 // makeParams takes the string containing teh intended arguments and returns an array of the Objects for each argument
 	public Object[] makeParams(String arguments)
 	{
-		String[] argArray = arguments.split(" ");
+		String[] argArray;
+		if (arguments.contains("\""))
+		{
+			argArray = removeQuotes(arguments);
+		}
+		else
+		{
+			argArray = arguments.split(" ");
+		}
+		removeQuotes(arguments);
 		Object [] resultArray = new Object [argArray.length];
 		int i = 0;
 
@@ -339,6 +348,46 @@ public String invokeMethod (String function, String arguments)
 		}
 
 		return resultArray;
+	}
+
+	public String[] removeQuotes(String arguments)
+	{
+		StringBuilder maker = new StringBuilder();
+		ArrayList<String> buildingArray = new ArrayList<String>();
+		boolean inQuotes = false;
+		for(int i=0;i<arguments.length();i++)
+		{
+			if((arguments.charAt(i) == '"') && inQuotes == false)
+			{
+				inQuotes = true;
+				continue;
+			}
+			else if((arguments.charAt(i) == '"') && inQuotes == true)
+			{
+				inQuotes = false;
+				continue;
+			}
+			if(inQuotes == false && (arguments.charAt(i) == ' '))
+			{
+				buildingArray.add(maker.toString());
+				maker.delete(0,maker.length());
+				continue;
+			}
+			else
+			{
+				maker.append(i);
+			}
+			if(inQuotes == true)
+			{
+				maker.append(arguments.charAt(i));
+			}
+		}
+		//String[] finished = buildingArray.toArray(new String[buildingArray.size()]);
+		//return finished;
+
+		String[] finished = new String[buildingArray.size()];
+		finished = buildingArray.toArray(finished);
+		return finished;
 	}
 
 // checkInteger checks if the given string is an integer and returns true or false accordingly
