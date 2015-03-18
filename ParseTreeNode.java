@@ -109,7 +109,7 @@ public class ParseTreeNode
     	if(this.isFunction)
     	{
     		string = string.substring(0, string.length()-1);
-    		string += ")";
+    		string += ") ";
 		}
     	return string;
     }
