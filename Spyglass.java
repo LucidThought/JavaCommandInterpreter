@@ -279,7 +279,21 @@ public String invokeMethod (String function, String arguments)
 			}
 		}
 
-		return returnObj.toString();
+		if (returnObj != null)
+		{
+			if (returnObj.getClass().getName().equals("java.lang.String"))
+			{
+				return '"' + returnObj.toString() + '"';
+			}
+			else
+			{
+				return returnObj.toString();
+			}
+		}
+		else
+		{
+			return "";
+		}
 	}
 
 
@@ -324,7 +338,6 @@ public String invokeMethod (String function, String arguments)
 		{
 			argArray = arguments.split(" ");
 		}
-		removeQuotes(arguments);
 		Object [] resultArray = new Object [argArray.length];
 		int i = 0;
 
@@ -355,28 +368,38 @@ public String invokeMethod (String function, String arguments)
 		StringBuilder maker = new StringBuilder();
 		ArrayList<String> buildingArray = new ArrayList<String>();
 		boolean inQuotes = false;
+		boolean afterQuotesChecker = false;
 		for(int i=0;i<arguments.length();i++)
 		{
-			if((arguments.charAt(i) == '"') && inQuotes == false)
+			if(inQuotes == false && (arguments.charAt(i) == '"'))
 			{
 				inQuotes = true;
 				continue;
 			}
-			else if((arguments.charAt(i) == '"') && inQuotes == true)
+			else if(inQuotes == true && (arguments.charAt(i) == '"'))
 			{
 				inQuotes = false;
-				continue;
-			}
-			if(inQuotes == false && (arguments.charAt(i) == ' '))
-			{
+				afterQuotesChecker = true;
 				buildingArray.add(maker.toString());
 				maker.delete(0,maker.length());
 				continue;
 			}
-			else
+			else if(inQuotes == false && (arguments.charAt(i) == ' '))
 			{
-				maker.append(i);
+				if(afterQuotesChecker)
+				{
+					afterQuotesChecker = false;
+					continue;
+				}
+				buildingArray.add(maker.toString());
+				maker.delete(0,maker.length());
+				continue;
 			}
+			else if(inQuotes == false && (arguments.charAt(i) != ' '))
+			{
+				maker.append(arguments.charAt(i));
+			}
+
 			if(inQuotes == true)
 			{
 				maker.append(arguments.charAt(i));
@@ -387,6 +410,16 @@ public String invokeMethod (String function, String arguments)
 
 		String[] finished = new String[buildingArray.size()];
 		finished = buildingArray.toArray(finished);
+
+		//Test code
+		/*
+		System.out.println(finished.length);
+		for(String w: finished)
+		{
+			System.out.println(w);
+		}
+		*/
+
 		return finished;
 	}
 
