@@ -352,8 +352,8 @@ public String invokeMethod (String function, String arguments)
 
 	public String[] removeQuotes(String arguments)
 	{
-		StringBuilder maker;
-		ArrayList buildingArray;
+		StringBuilder maker = new StringBuilder();
+		ArrayList<String> buildingArray = new ArrayList<String>();
 		boolean inQuotes = false;
 		for(int i=0;i<arguments.length();i++)
 		{
@@ -382,7 +382,11 @@ public String invokeMethod (String function, String arguments)
 				maker.append(arguments.charAt(i));
 			}
 		}
-		String[] finished = buildingArray.toArray(new String[buildingArray.size()]);
+		//String[] finished = buildingArray.toArray(new String[buildingArray.size()]);
+		//return finished;
+
+		String[] finished = new String[buildingArray.size()];
+		finished = buildingArray.toArray(finished);
 		return finished;
 	}
 
