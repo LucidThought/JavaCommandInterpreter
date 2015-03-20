@@ -363,6 +363,8 @@ public String invokeMethod (String function, String arguments)
 		return resultArray;
 	}
 
+// removeQuotes takes a String of the function arguments (which includes at least one String)
+// removes the quotes where appropriate
 	public Object[] removeQuotes(String arguments)
 	{
 		StringBuilder maker = new StringBuilder();
@@ -416,22 +418,9 @@ public String invokeMethod (String function, String arguments)
 				maker.append(arguments.charAt(i));
 			}
 		}
-		//String[] finished = buildingArray.toArray(new String[buildingArray.size()]);
-		//return finished;
 
 		Object[] finished = new Object[buildingArray.size()];
-
 		finished = buildingArray.toArray(finished);
-
-		//Test code
-		/*
-		System.out.println(finished.length);
-		for(String w: finished)
-		{
-			System.out.println(w);
-		}
-		*/
-
 		return finished;
 	}
 
