@@ -37,6 +37,7 @@ public class Urab
     static final int END_BRACKET_ERROR = 7;
     static final int ILLEGAL_FUN_NAME = 8;
 
+    //This is the main function. It takes in command line arguments and sets up the program for looping
 	public static void main(String[] args)
 	{   
         boolean verbose = false;
@@ -181,7 +182,7 @@ public class Urab
                 input = ((in.nextLine()).replaceAll("\\s+", " ")).trim();
 
                 if (input.equals("?"))
-                    printHelp();
+                    printStartup();
                 else if (input.equals(""))
                 {
                     //do nothing
@@ -214,10 +215,16 @@ public class Urab
                     {
                         try
                         {
-                            System.out.println(head.toString());
+                            //System.out.println(head.toString());
                             //verify tree is valid
-                            System.out.println(verifyTree(head, queenB));
-                            System.out.println(executeTree(head, queenB));
+                            if(!(verifyTree(head, queenB).equals(null)))
+                            {
+                                System.out.println(executeTree(head, queenB));
+                            }
+                            else
+                            {
+                                System.out.println("Unable to parse line");
+                            }
                             //evaluate tree
 
                         }
@@ -236,6 +243,7 @@ public class Urab
                             {
                                 ef.printStackTrace();
                             }
+
                         }
                         catch(Exception ef)
                         {
@@ -608,14 +616,6 @@ public class Urab
                 System.out.print("-");
             }
             System.out.println("^");
-            try
-            {
-                if(verbose){throw new Exception();}
-            }
-            catch (Exception ef)
-            {
-                ef.printStackTrace();
-            }
         }
         else if(errorCode == INVALID_CHAR_IN_LITERAL)
         {
