@@ -332,7 +332,7 @@ public String invokeMethod (String function, String arguments)
 		String[] argArray;
 		if (arguments.contains("\""))
 		{
-			argArray = removeQuotes(arguments);
+			return removeQuotes(arguments);
 		}
 		else
 		{
@@ -363,10 +363,10 @@ public String invokeMethod (String function, String arguments)
 		return resultArray;
 	}
 
-	public String[] removeQuotes(String arguments)
+	public Object[] removeQuotes(String arguments)
 	{
 		StringBuilder maker = new StringBuilder();
-		ArrayList<String> buildingArray = new ArrayList<String>();
+		ArrayList buildingArray = new ArrayList();
 		boolean inQuotes = false;
 		boolean afterQuotesChecker = false;
 		for(int i=0;i<arguments.length();i++)
@@ -391,9 +391,20 @@ public String invokeMethod (String function, String arguments)
 					afterQuotesChecker = false;
 					continue;
 				}
-				buildingArray.add(maker.toString());
-				maker.delete(0,maker.length());
-				continue;
+				else
+				{
+					if (checkInteger(maker.toString()) == true)
+					{
+						buildingArray.add(new Integer(Integer.parseInt(maker.toString())));
+					}
+					else if (checkFloat(maker.toString()) == true)
+					{
+						buildingArray.add(new Float(Float.parseFloat(maker.toString())));
+					}
+
+					maker.delete(0,maker.length());
+					continue;
+				}
 			}
 			else if(inQuotes == false && (arguments.charAt(i) != ' '))
 			{
@@ -408,7 +419,8 @@ public String invokeMethod (String function, String arguments)
 		//String[] finished = buildingArray.toArray(new String[buildingArray.size()]);
 		//return finished;
 
-		String[] finished = new String[buildingArray.size()];
+		Object[] finished = new Object[buildingArray.size()];
+
 		finished = buildingArray.toArray(finished);
 
 		//Test code
