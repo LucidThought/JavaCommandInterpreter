@@ -31,7 +31,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-//import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -185,9 +184,6 @@ public class Spyglass
 
 
 // getAccessibleMethods returns a list of pointers to all of the public methods inside the class
-	/*
-	* See http://stackoverflow.com/questions/1857775/getting-a-list-of-accessible-methods-for-a-given-class-via-reflection
-	*/
 	public Method[] getAccessibleMethods()
 	{
 		List<Method> result = new ArrayList<Method>();
@@ -254,13 +250,8 @@ public class Spyglass
 
 
 // invokeMethod finds the intended method with summonMethod, then executes and returns a string of the output of that function
-public String invokeMethod (String function, String arguments)
+	public String invokeMethod (String function, String arguments)
 	{
-// throws NoSuchMethodException, IllegalAccessException, InvocationTargetException??????
-
-/*
-* See http://www.oracle.com/technetwork/articles/java/javareflection-1536171.html
-*/
 		Object returnObj = null;
 
 		Object[] params = makeParams(arguments);
