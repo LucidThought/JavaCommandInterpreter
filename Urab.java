@@ -37,7 +37,7 @@ public class Urab
     static final int END_BRACKET_ERROR = 7;
     static final int ILLEGAL_FUN_NAME = 8;
 
-    //This is the main function. It takes in command line arguments and sets up the program for looping
+    //This is the main function. It takes in command line arguments and sets up the program for input
 	public static void main(String[] args)
 	{   
         boolean verbose = false;
@@ -50,6 +50,7 @@ public class Urab
 			//immediately print synopsis
             printSynopsis();
 		}
+        //step through command line arguments and check for validity/perform operations
         for(int i = 0; i<args.length;i++)
         {
             if((args[i].toLowerCase()).equals("--help") || (args[i].toLowerCase()).equals("--h") || args[i].equals("-h") || args[i].equals("-hv") || args[i].equals("-vh") || args[i].equals("-?"))
@@ -128,10 +129,12 @@ public class Urab
 
         if(helpMode == true)
         {
+            //help mode sucks
             printHelp();
             System.exit(0);            
         }
 
+        //replace placeholder filenames with default filenames if none were given
         if(className.equals(""))
         {
             className = "Commands";
@@ -141,6 +144,7 @@ public class Urab
             jarName = "commands.jar";
         }
 
+        //ensure file exists
         File f = new File(jarName);
         if(!f.exists() || f.isDirectory())
         {
@@ -149,9 +153,9 @@ public class Urab
         }
 		printStartup();
         inputLoop(verbose, jarName, className);
-        //System.out.print("\nJar name: " + jarName + "\nClass name: " + className + "\n");
     }
 
+    //various preset messages to be printed.
     public static void printStartup()
     {
     	String startup = "q           : Quit the program.\nv           : Toggle verbose mode (stack traces).\nf           : List all known functions.\n?           : Print this helpful text.\n<expression>:           Evaluate the expression.\nExpressions can be integers, floats, strings (surrounded in double quotes) or function calls of the form \'(identifier {expression}*)\'.\n";
@@ -168,17 +172,24 @@ public class Urab
 		System.out.print(synopsis);
 	}
 
+    //loops until quit, takes input and reads/parses it
     public static void inputLoop(boolean verbose, String jarName, String className)
     {
         try
         {
+            //all hail queen B
+            //Spyglass is our reflection agent
+            //initialization of queenB will throw exception if file or class do not exist
             Spyglass queenB = new Spyglass(jarName, className);
             Scanner in = new Scanner(System.in);
             String input = "";
+            //primary loop
             while(!input.equals("q"))
             {
                 mainBreak:
                 System.out.print("> ");
+
+                //take input without USELESS WHITESPACE
                 input = ((in.nextLine()).replaceAll("\\s+", " ")).trim();
 
                 if (input.equals("?"))
@@ -188,9 +199,11 @@ public class Urab
                     //do nothing
                 }
                 else if (input.equals("f"))
+                    //print all known functions
                     queenB.printMethods(queenB.getAccessibleMethods());
                 else if (input.equals("v"))
                 {
+                    //toggle verbose mode
                     if (verbose == false)
                     {
                         verbose = true;
@@ -204,15 +217,19 @@ public class Urab
                 }
                 else if (input.equals("q"))
                 {
+                    //bye.
                     System.out.print("bye.\n");
                     System.exit(0);
                 }
                 else
                 {
+                    //parse tree node is a node obj in a tree structure. 
+                    //This creates a tree of functions and arguments
                     ParseTreeNode head = new ParseTreeNode("");
                     head = parse(verbose, input, input); //create a parse tree out of input
                     if(head != null)
                     {
+                        //verify tree will throw exceptions if input is invalid
                         try
                         {
                             //System.out.println(head.toString());
@@ -223,14 +240,15 @@ public class Urab
                             }
                             else
                             {
+                                //ruh roh raggy
                                 System.out.println("Unable to parse line");
                             }
-                            //evaluate tree
 
                         }
                         catch(InvalidFunctionCallException ef)
                         {
-                            error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage()), verbose);
+                            System.out.println(ef.getMessage());
+                            error(input, INVALID_FUNCTION_CALL, input.indexOf(ef.getMessage().trim())+1, verbose);
                             if(verbose == true)
                             {
                                 ef.printStackTrace();
@@ -238,20 +256,13 @@ public class Urab
                         }
                         catch(SecurityException ef)
                         {
-                            System.out.println("How did you do this. (urab)");
+                            System.out.println("Cannot access the file.");
                             if(verbose == true)
                             {
                                 ef.printStackTrace();
                             }
+                            System.exit(0);
 
-                        }
-                        catch(Exception ef)
-                        {
-                            System.out.println("How did you do this. (urab)");
-                            if(verbose == true)
-                            {
-                                ef.printStackTrace();
-                            }
                         }
                     }
                 }
@@ -295,10 +306,17 @@ public class Urab
         }
         
     }
+
+    //This takes the string of input and returns it as a tree structure
     public static ParseTreeNode parse(boolean verbose, String input, String fullInput)
     {
-        //in future, will return a tree
         input = input.trim();
+
+        //i.imgur.com/vqBUBtJ.jpg
+        //there are 20 letters in the alphabet yeah?
+        //no thats totally wrong theres 26
+        //oh i guess i forgot U R A B
+        //thats funny b/c i am a bee
         if(input.toLowerCase().equals("urab"))
         {
             System.out.println("me too thanks\nme too thanks");
@@ -311,7 +329,7 @@ public class Urab
                 error(fullInput, END_BRACKET_ERROR, verbose);
                 return null;
             }
-            if(input.lastIndexOf(')') > 0)
+            else if(input.lastIndexOf(')') > 0)
             {
                 input = input.substring(1, input.lastIndexOf(')'));
                 String[] args = {};
@@ -355,8 +373,9 @@ public class Urab
                         error(fullInput, OPEN_BRACKET_ERROR, verbose);
                         return null;
                     }
-
                 }
+
+                //any space separated object in the current level of brackets is a child of the current
                 ParseTreeNode[] children = new ParseTreeNode[args.length - 1];
                 for(int i = 0; i< children.length; i++)
                 {
@@ -386,18 +405,9 @@ public class Urab
             //get value type
             if(input.contains(" "))
             {
-                //System.out.println(input + " : " + getType(input));
+                //spaces are not allowed except in string
                 if(getType(input).equals("String"))
-                {/*
-                    String inner = input.substring(1, input.length()-1);
-                    for(int i = 0; i < inner.length(); i++)
-                    {
-                        if(inner.contains("\""))
-                        {
-                            error(fullInput, INVALID_CHAR_IN_LITERAL, i+1);
-                            break;
-                        }
-                    }*/
+                {
                     return(new ParseTreeNode(input));
                 }
                 else
@@ -417,18 +427,22 @@ public class Urab
                 return(new ParseTreeNode(input));
             }
         }
-        //System.out.println("U R A B");
         return null;
     }
+
+    //this ensures that functions exist and are being used on the correct argument types
     public static String verifyTree(ParseTreeNode head, Spyglass queenB) throws InvalidFunctionCallException
     {
         if(head.isFunction == false)
         {
+            //if the input is a single literal it is valid
             return head.getType();
         }
         String[] childTypes = new String[head.numChildren()];
         String types = "";
         String function = head.getData();
+
+        //recursively checks return types of functions match arguments taken by their parents
         for(int i = 0; i < childTypes.length; i++)
         {
             childTypes[i]=((head.getChildren()).get(i)).getType();
@@ -450,21 +464,29 @@ public class Urab
             types = types + childTypes[i] + " ";
         }
 
-        if(queenB.verifyFunction(function, types) == true)
+        if(queenB.verifyFunction(function, types) == true) 
         {
             return queenB.verifyReturns(function, types);
         }
         else
         {
+            //i made an exception
+            //gibe A+ plz
+            //rune scimmy
             throw new InvalidFunctionCallException(head.toString());
         }
     }
+
+    //goes to lowest functions, performs them on arguments and replaces them with result, recursively
     public static String executeTree(ParseTreeNode head, Spyglass queenB)
     {
         if(head.isFunction == false)
         {
             return head.getData();
         }
+        //convert all children to a single space seperated string
+        //this is what queenB wants
+        //hail queenB
         String[] childVal = new String[head.numChildren()];
         String values = "";
         String function = head.getData();
@@ -487,12 +509,19 @@ public class Urab
         head.evaluate(queenB.invokeMethod(function, values));
         return head.getData();
     }
+
+    //add an element to an array
+    //screw you java rules
+    //runs in O(n) where n is max number of arguments a single function takes
+    //not that bad i swear
     public static String[] addElement(String[] args, String newArg)
     {
         String[] newArray = Arrays.copyOf(args, args.length+1);
         newArray[args.length] = newArg;
         return newArray;
     }
+
+    //returns type of an argument
     public static String getType(String val)
     {
         if(val.startsWith("\"") && val.endsWith("\""))
@@ -512,6 +541,10 @@ public class Urab
         }
         return "null";
     }
+
+    //OVERLOADED:
+    //some errors are self locating, given those, find location and print error message
+    //some need an index to the errior location passed in
     public static void error(String input, int errorCode, boolean verbose)
     {
         if(errorCode == OPEN_BRACKET_ERROR)
@@ -587,6 +620,7 @@ public class Urab
             }
         }
     }
+    //these errors require an index to point to
     public static void error(String input, int errorCode, int errorIndex, boolean verbose)
     {
         if(errorCode == INVALID_TYPE)
@@ -654,6 +688,8 @@ public class Urab
             }
         }
     }
+
+    //ensure function names follow rulez
     public static boolean validateFunctionName(String function)
     {
         if(!(function.substring(0,1).matches("_|[A-Z]|[a-z]")))

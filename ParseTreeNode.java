@@ -9,13 +9,14 @@ public class ParseTreeNode
 	private ParseTreeNode parent;
 	private List<ParseTreeNode> children;
 
+	//if given just a literal, it is just a literal
 	public ParseTreeNode(String literal)
 	{
 		this.data = literal;
 		this.isFunction = false;  
-		//this.children = new List<ParseTreeNode>(); 
 	}
 
+	//if given children, must be a function
 	public ParseTreeNode(String funName, ParseTreeNode[] children)
 	{
 		this.data = funName;
@@ -23,12 +24,12 @@ public class ParseTreeNode
 		this.isFunction = true;
 	}
 
+	//when a function is evaluated, it becomes a literal
 	public int evaluate(String newValue)
 	{
 
 		this.data = newValue;
 		this.isFunction = false;
-		//this.children.clear();
 		return 0;
 	}
 
@@ -37,6 +38,7 @@ public class ParseTreeNode
 		return this.data;
 	}
 
+	//returns number of children
 	public int numChildren()
 	{
 		if(!this.isFunction)
@@ -46,13 +48,9 @@ public class ParseTreeNode
 		return this.children.size();	
 	}
 
+
 	public List<ParseTreeNode> getChildren()
 	{
-		/*
-		//ParseTreeNode<T>[] childArray = new ParseTreeNode<T>[children.size()];
-		ParseTreeNode<T>[] childArray = children.toArray(new ParseTreeNode<T>[children.size()]);
-		return childArray;
-		*/
 		return children;
 	}
 
@@ -61,6 +59,7 @@ public class ParseTreeNode
 		return this.parent;
 	}
 
+	//get types of children
 	public String[] getTypes()
 	{
 		String[] types = new String[children.size()];
@@ -71,6 +70,7 @@ public class ParseTreeNode
 		return types;
 	}
 
+	//returns current type
 	public String getType()
     {
     	if (isFunction == true)
@@ -94,6 +94,7 @@ public class ParseTreeNode
         else return "null";
     }
 
+    //convert tree to a string
     public String toString()
     {
     	String string= "";
